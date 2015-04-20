@@ -18,6 +18,7 @@ Please see our [gulpfile.js](app/templates/gulpfile.js) for up to date informati
 * Map compiled CSS to source stylesheets with source maps
 * Awesome image optimization
 * Automagically wire-up dependencies installed with [Bower](http://bower.io)
+* CoffeeScript support enabled by default
 
 *For more information on what this generator can do for you, take a look at the [gulp plugins](app/templates/_package.json) used in our `package.json`.*
 
