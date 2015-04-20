@@ -1,10 +1,10 @@
 {
-  "name": "generator-gulp-webapp",
-  "version": "0.3.0",
+  "name": "generator-gulp-coffee-webapp",
+  "version": "0.0.1",
   "description": "Scaffold out a front-end web app",
   "license": "BSD",
-  "repository": "yeoman/generator-gulp-webapp",
-  "author": "The Yeoman Team",
+  "repository": "jaromero/generator-gulp-coffee-webapp",
+  "author": "Antonio Romero",
   "main": "app/index.js",
   "engines": {
     "node": ">=0.10.0",
@@ -24,7 +24,8 @@
     "h5bp",
     "modernizr",
     "jquery",
-    "gulp"
+    "gulp",
+    "coffeescript"
   ],
   "dependencies": {
     "chalk": "^1.0.0",

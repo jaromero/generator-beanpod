@@ -1,3 +1,5 @@
+_(This is just [generator-gulp-webapp](http://github.com/yeoman/generator-gulp-webapp) with CoffeeScript support enabled by default.)_
+
 # Web app generator [![Build Status](https://secure.travis-ci.org/yeoman/generator-gulp-webapp.svg?branch=master)](http://travis-ci.org/yeoman/generator-gulp-webapp)
 
 > [Yeoman](http://yeoman.io) generator that scaffolds out a front-end web app using [gulp](http://gulpjs.com/) for the build process
@@ -40,7 +42,7 @@ If your favorite feature is missing and you really need Ruby Sass, you can alway
 ## Docs
 
 * [getting started](docs/README.md) with this generator
-* [recipes](docs/recipes/README.md) for integrating other popular technologies like CoffeeScript
+* [recipes](docs/recipes/README.md) for integrating other popular technologies like Less or React
 * [details](docs/bower.md) about our Bower setup
 
 
