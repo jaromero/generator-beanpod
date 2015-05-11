@@ -10,11 +10,10 @@ gulp.task('styles', function () {<% if (includeSass) { %>
   return gulp.src('app/styles/*.scss')
     .pipe($.sourcemaps.init())
     .pipe($.sass({
-      outputStyle: 'nested', // libsass doesn't support expanded yet
+      outputStyle: 'expanded',
       precision: 10,
-      includePaths: ['.'],
-      onError: console.error.bind(console, 'Sass error:')
-    }))<% } else { %>
+      includePaths: ['.']
+    }).on('error', $.sass.logError))<% } else { %>
   return gulp.src('app/styles/*.css')
     .pipe($.sourcemaps.init())<% } %>
     .pipe($.postcss([
@@ -155,7 +154,7 @@ gulp.task('wiredep', function () {
 <% } %>
   gulp.src('app/*.html')
     .pipe(wiredep({<% if (includeSass && includeBootstrap) { %>
-      exclude: ['bootstrap-sass-official'],<% } %>
+      exclude: ['bootstrap-sass'],<% } %>
       ignorePath: /^(\.\.\/)*\.\./
     }))
     .pipe(gulp.dest('app'));
