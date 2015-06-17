@@ -9,7 +9,7 @@ _(This is just [generator-gulp-webapp](http://github.com/yeoman/generator-gulp-w
 
 ## Features
 
-Please see our [gulpfile.js](app/templates/gulpfile.js) for up to date information on what we support.
+Please see our [gulpfile](app/templates/gulpfile.babel.js) for up to date information on what we support.
 
 * CSS Autoprefixing
 * Built-in preview server with BrowserSync
@@ -19,6 +19,7 @@ Please see our [gulpfile.js](app/templates/gulpfile.js) for up to date informati
 * Awesome image optimization
 * Automagically wire-up dependencies installed with [Bower](http://bower.io)
 * CoffeeScript support enabled by default
+* The gulpfile makes use of [ES2015 features](https://babeljs.io/docs/learn-es2015/) by using [Babel](https://babeljs.io)
 
 *For more information on what this generator can do for you, take a look at the [gulp plugins](app/templates/_package.json) used in our `package.json`.*
 
@@ -27,7 +28,7 @@ Please see our [gulpfile.js](app/templates/gulpfile.js) for up to date informati
 
 Keep in mind that libsass is feature-wise not fully compatible with Ruby Sass. Check out [this](http://sass-compatibility.github.io) curated list of incompatibilities to find out which features are missing.
 
-If your favorite feature is missing and you really need Ruby Sass, you can always switch to [gulp-ruby-sass](https://github.com/sindresorhus/gulp-ruby-sass) and update the `styles` task in `gulpfile.js` accordingly.
+If your favorite feature is missing and you really need Ruby Sass, you can always switch to [gulp-ruby-sass](https://github.com/sindresorhus/gulp-ruby-sass) and update the `styles` task in gulpfile accordingly.
 
 
 ## Getting Started
@@ -37,7 +38,9 @@ If your favorite feature is missing and you really need Ruby Sass, you can alway
 - Run `yo gulp-webapp` to scaffold your webapp
 - Run `gulp serve` to preview and watch for changes
 - Run `bower install --save <package>` to install frontend dependencies
+- Run `gulp serve:test` to run the tests in the browser
 - Run `gulp` to build your webapp for production
+- Run `gulp serve:dist` to preview the production build
 
 
 ## Docs
@@ -56,7 +59,7 @@ If your favorite feature is missing and you really need Ruby Sass, you can alway
 - `--skip-install`
   Skips the automatic execution of `bower` and `npm` after scaffolding has finished.
 - `--test-framework=<framework>`
-  Defaults to `mocha`. Can be switched for another supported testing framework like `jasmine`.
+  Either `mocha` or `jasmine`. Defaults to `mocha`.
 
 
 ## Contribute

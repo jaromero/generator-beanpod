@@ -70,7 +70,8 @@
       <ul>
         <li>HTML5 Boilerplate</li><% if (includeSass) { %>
         <li>Sass</li><% } %><% if (includeModernizr) { %>
-        <li>Modernizr</li><% } %>
+        <li>Modernizr</li><% } %><% if (includeJQuery) { %>
+        <li>jQuery</li><% } %>
       </ul>
     </div>
     <% } %>
@@ -83,6 +84,14 @@
       r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
       ga('create','UA-XXXXX-X');ga('send','pageview');
     </script>
+
+<% if (includeBootstrap) { -%>
+    <!-- build:js scripts/plugins.js -->
+<% bsPlugins.forEach(function (plugin) { -%>
+    <script type="<%= bsPath + plugin %>.js"></script>
+<% }) -%>
+    <!-- endbuild -->
+<% } -%>
 
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
