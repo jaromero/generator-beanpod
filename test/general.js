@@ -35,7 +35,7 @@ describe('general', function () {
       'app/apple-touch-icon.png',
       'app/robots.txt',
       'app/index.html',
-      'app/scripts/main.js',
+      'app/scripts/main.coffee',
       'app/styles/main.css',
       'app/images',
       'app/fonts',
