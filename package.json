@@ -1,6 +1,6 @@
 {
   "name": "generator-gulp-coffee-webapp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Scaffold out a front-end web app",
   "license": "BSD",
   "repository": "jaromero/generator-gulp-coffee-webapp",
