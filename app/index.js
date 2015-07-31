@@ -31,7 +31,7 @@ module.exports = generators.Base.extend({
     if (this.options['test-framework'] === 'mocha') {
       testLocal = require.resolve('generator-mocha/generators/app/index.js');
     } else if (this.options['test-framework'] === 'jasmine') {
-      testLocal = require.resolve('generator-jasmine/lib/generators/app/index.js');
+      testLocal = require.resolve('generator-jasmine/generators/app/index.js');
     }
 
     this.composeWith(this.options['test-framework'] + ':app', {
@@ -109,7 +109,8 @@ module.exports = generators.Base.extend({
           name: this.pkg.name,
           version: this.pkg.version,
           includeSass: this.includeSass,
-          includeBootstrap: this.includeBootstrap
+          includeBootstrap: this.includeBootstrap,
+          testFramework: this.options['test-framework']
         }
       );
     },

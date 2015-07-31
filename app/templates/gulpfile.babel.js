@@ -42,12 +42,11 @@ function lint(files, options) {
 }
 const testLintOptions = {
   env: {
+<% if (testFramework === 'mocha') { -%>
     mocha: true
-  },
-  globals: {
-    assert: false,
-    expect: false,
-    should: false
+<% } else if (testFramework === 'jasmine') { -%>
+    jasmine: true
+<% } -%>
   }
 };
 
@@ -84,9 +83,8 @@ gulp.task('images', () => {
 });
 
 gulp.task('fonts', () => {
-  return gulp.src(require('main-bower-files')({
-    filter: '**/*.{eot,svg,ttf,woff,woff2}'
-  }).concat('app/fonts/**/*'))
+  return gulp.src(require('main-bower-files')('**/*.{eot,svg,ttf,woff,woff2}', function (err) {})
+    .concat('app/fonts/**/*'))
     .pipe(gulp.dest('.tmp/fonts'))
     .pipe(gulp.dest('dist/fonts'));
 });
