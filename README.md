@@ -1,7 +1,3 @@
-_(This is just [generator-gulp-webapp](http://github.com/yeoman/generator-gulp-webapp) with CoffeeScript support enabled by default.)_
-
-# Web app generator [![Build Status](https://secure.travis-ci.org/yeoman/generator-gulp-webapp.svg?branch=master)](http://travis-ci.org/yeoman/generator-gulp-webapp)
-
 > [Yeoman](http://yeoman.io) generator that scaffolds out a front-end web app using [gulp](http://gulpjs.com/) for the build process
 
 ![](screenshot.png)
@@ -13,6 +9,7 @@ Please see our [gulpfile](app/templates/gulpfile.babel.js) for up to date inform
 
 * CSS Autoprefixing
 * Built-in preview server with BrowserSync
+* Templating with [jade](http://jade-lang.com)
 * Automagically compile Sass with [libsass](http://libsass.org)
 * Automagically lint your scripts
 * Map compiled CSS to source stylesheets with source maps
