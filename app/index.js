@@ -70,6 +70,10 @@ module.exports = generators.Base.extend({
         name: 'Modernizr',
         value: 'includeModernizr',
         checked: true
+      }, {
+        name: 'Jade',
+        value: 'includeJade',
+        checked: true
       }]
     }, {
       type: 'confirm',
@@ -93,6 +97,7 @@ module.exports = generators.Base.extend({
       this.includeSass = hasFeature('includeSass');
       this.includeBootstrap = hasFeature('includeBootstrap');
       this.includeModernizr = hasFeature('includeModernizr');
+      this.includeJade = hasFeature('includeJade');
       this.includeJQuery = answers.includeJQuery;
 
       done();
@@ -110,6 +115,7 @@ module.exports = generators.Base.extend({
           version: this.pkg.version,
           includeSass: this.includeSass,
           includeBootstrap: this.includeBootstrap,
+          includeJade: this.includeJade,
           testFramework: this.options['test-framework']
         }
       );
@@ -120,7 +126,8 @@ module.exports = generators.Base.extend({
         this.templatePath('_package.json'),
         this.destinationPath('package.json'),
         {
-          includeSass: this.includeSass
+          includeSass: this.includeSass,
+          includeJade: this.includeJade
         }
       );
     },
@@ -231,7 +238,7 @@ module.exports = generators.Base.extend({
     },
 
     html: function () {
-      var bsPath;
+      var bsPath, bsPlugins, tplOptions;
 
       // path prefix for Bootstrap JS files
       if (this.includeBootstrap) {
@@ -244,32 +251,49 @@ module.exports = generators.Base.extend({
         }
       }
 
-      this.fs.copyTpl(
-        this.templatePath('index.html'),
-        this.destinationPath('app/index.html'),
-        {
-          appname: this.appname,
-          includeSass: this.includeSass,
-          includeBootstrap: this.includeBootstrap,
-          includeModernizr: this.includeModernizr,
-          includeJQuery: this.includeJQuery,
-          bsPath: bsPath,
-          bsPlugins: [
-            'affix',
-            'alert',
-            'dropdown',
-            'tooltip',
-            'modal',
-            'transition',
-            'button',
-            'popover',
-            'carousel',
-            'scrollspy',
-            'collapse',
-            'tab'
-          ]
-        }
-      );
+      bsPlugins = [
+        'affix',
+        'alert',
+        'dropdown',
+        'tooltip',
+        'modal',
+        'transition',
+        'button',
+        'popover',
+        'carousel',
+        'scrollspy',
+        'collapse',
+        'tab'
+      ];
+
+      tplOptions = {
+        appname: this.appname,
+        includeSass: this.includeSass,
+        includeBootstrap: this.includeBootstrap,
+        includeModernizr: this.includeModernizr,
+        includeJQuery: this.includeJQuery,
+        bsPath: bsPath,
+        bsPlugins: bsPlugins
+      }
+
+      if (this.includeJade) {
+        this.fs.copyTpl(
+          this.templatePath('default.jade'),
+          this.destinationPath('app/layouts/default.jade'),
+          tplOptions
+        );
+        this.fs.copyTpl(
+          this.templatePath('index.jade'),
+          this.destinationPath('app/index.jade'),
+          tplOptions
+        )
+      } else {
+        this.fs.copyTpl(
+          this.templatePath('index.html'),
+          this.destinationPath('app/index.html'),
+          tplOptions
+        );
+      }
     },
 
     misc: function () {
@@ -286,8 +310,10 @@ module.exports = generators.Base.extend({
   },
 
   end: function () {
-    var bowerJson = this.fs.readJSON(this.destinationPath('bower.json'));
-    var howToInstall =
+    var bowerJson, howToInstall, wiredepOpts;
+
+    bowerJson = this.fs.readJSON(this.destinationPath('bower.json'));
+    howToInstall =
       '\nAfter running ' +
       chalk.yellow.bold('npm install & bower install') +
       ', inject your' +
@@ -301,13 +327,17 @@ module.exports = generators.Base.extend({
     }
 
     // wire Bower packages to .html
-    wiredep({
+    wiredepOpts = {
       bowerJson: bowerJson,
       directory: 'bower_components',
       exclude: ['bootstrap-sass', 'bootstrap.js'],
       ignorePath: /^(\.\.\/)*\.\./,
       src: 'app/index.html'
-    });
+    }
+    if (this.includeJade) {
+      wiredepOpts.src = 'app/layouts/default.jade'
+    }
+    wiredep(wiredepOpts);
 
     if (this.includeSass) {
       // wire Bower packages to .scss

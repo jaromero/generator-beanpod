@@ -30,6 +30,13 @@ gulp.task('scripts', () => {
     .pipe($.coffee()).on('error', function(err) { console.log('Error!', err.message)})
     .pipe(gulp.dest('.tmp/scripts'));
 });
+<% if (includeJade) { %>
+gulp.task('views', () => {
+  return gulp.src('app/*.jade')
+    .pipe($.jade({pretty: true}))
+    .pipe(gulp.dest('.tmp'))
+    .pipe(reload({stream: true}));
+});<% } %>
 
 function lint(files, options) {
   return () => {
@@ -53,10 +60,11 @@ const testLintOptions = {
 gulp.task('lint', lint('app/scripts/**/*.js'));
 gulp.task('lint:test', lint('test/spec/**/*.js', testLintOptions));
 
-gulp.task('html', ['styles', 'scripts'], () => {
+gulp.task('html', ['styles', 'scripts'<% if (includeJade) { %>, 'views'<% } %>], () => {
   const assets = $.useref.assets({searchPath: ['.tmp', 'app', '.']});
-
-  return gulp.src('app/*.html')
+  <% if (includeJade) { %>
+  return gulp.src(['app/*.html', '.tmp/*.html'])<% } else { %>
+  return gulp.src('app/*.html')<% } %>
     .pipe(assets)
     .pipe($.if('*.js', $.uglify()))
     .pipe($.if('*.css', $.minifyCss({compatibility: '*'})))
@@ -92,7 +100,8 @@ gulp.task('fonts', () => {
 gulp.task('extras', () => {
   return gulp.src([
     'app/*.*',
-    '!app/*.html'
+    '!app/*.html'<% if (includeJade) { %>,
+    '!app/*.jade'<% } %>
   ], {
     dot: true
   }).pipe(gulp.dest('dist'));
@@ -100,7 +109,7 @@ gulp.task('extras', () => {
 
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
-gulp.task('serve', ['styles', 'fonts', 'scripts'], () => {
+gulp.task('serve', ['styles', 'fonts', 'scripts'<% if (includeJade) { %>, 'views'<% } %>], () => {
   browserSync({
     notify: false,
     port: 9000,
@@ -113,13 +122,15 @@ gulp.task('serve', ['styles', 'fonts', 'scripts'], () => {
   });
 
   gulp.watch([
-    'app/*.html',
+    'app/*.html',<% if (includeJade) { %>
+    '.tmp/*.html',<% } %>
     'app/scripts/**/*.js',
     '.tmp/scripts/**/*.js',
     'app/images/**/*',
     '.tmp/fonts/**/*'
   ]).on('change', reload);
-
+  <% if (includeJade) { %>
+  gulp.watch('app/**/*.jade', ['views']); <% } %>
   gulp.watch('app/styles/**/*.<%= includeSass ? 'scss' : 'css' %>', ['styles']);
   gulp.watch('app/scripts/**/*.{coffee,litcoffee}', ['scripts']);
   gulp.watch('app/fonts/**/*', ['fonts']);
@@ -160,8 +171,9 @@ gulp.task('wiredep', () => {<% if (includeSass) { %>
       ignorePath: /^(\.\.\/)+/
     }))
     .pipe(gulp.dest('app/styles'));
-<% } %>
-  gulp.src('app/*.html')
+<% } if (includeJade) { %>
+  gulp.src('app/layouts/*.jade')<% } else { %>
+  gulp.src('app/*.html')<% } %>
     .pipe(wiredep({<% if (includeBootstrap) { if (includeSass) { %>
       exclude: ['bootstrap-sass'],<% } else { %>
       exclude: ['bootstrap.js'],<% }} %>
