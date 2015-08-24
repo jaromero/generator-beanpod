@@ -15,8 +15,9 @@ describe('gulp tasks', function () {
   it('should contain necessary tasks', function () {
     [
       'styles',
-      'lint',
-      'lint:test',
+      'eslint',
+      'eslint:test',
+      'coffeelint',
       'html',
       'images',
       'fonts',

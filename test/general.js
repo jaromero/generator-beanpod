@@ -39,7 +39,8 @@ describe('general', function () {
       'app/styles/main.css',
       'app/images',
       'app/fonts',
-      'test'
+      'test',
+      'coffeelint.json'
     ]);
   });
 });

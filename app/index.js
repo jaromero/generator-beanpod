@@ -235,6 +235,11 @@ module.exports = generators.Base.extend({
         this.templatePath('main.coffee'),
         this.destinationPath('app/scripts/main.coffee')
       );
+
+      this.fs.copy(
+        this.templatePath('coffeelint.json'),
+        this.destinationPath('coffeelint.json')
+      );
     },
 
     html: function () {

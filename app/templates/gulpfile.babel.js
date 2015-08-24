@@ -38,13 +38,22 @@ gulp.task('views', () => {
     .pipe(reload({stream: true}));
 });<% } %>
 
-function lint(files, options) {
+function eslint(files, options) {
   return () => {
     return gulp.src(files)
       .pipe(reload({stream: true, once: true}))
       .pipe($.eslint(options))
       .pipe($.eslint.format())
       .pipe($.if(!browserSync.active, $.eslint.failAfterError()));
+  };
+}
+function coffeelint(files, options) {
+  return () => {
+    return gulp.src(files)
+      .pipe(reload({stream: true, once: true}))
+      .pipe($.coffeelint(options))
+      .pipe($.coffeelint.reporter(require('coffeelint-stylish')))
+      .pipe($.if(!browserSync.active, $.coffeelint.reporter('fail')));
   };
 }
 const testLintOptions = {
@@ -57,8 +66,10 @@ const testLintOptions = {
   }
 };
 
-gulp.task('lint', lint('app/scripts/**/*.js'));
-gulp.task('lint:test', lint('test/spec/**/*.js', testLintOptions));
+gulp.task('eslint', eslint('app/scripts/**/*.js'));
+gulp.task('eslint:test', eslint('test/spec/**/*.js', testLintOptions));
+
+gulp.task('coffeelint', coffeelint('app/scripts/**/*.coffee'));
 
 gulp.task('html', ['styles', 'scripts'<% if (includeJade) { %>, 'views'<% } %>], () => {
   const assets = $.useref.assets({searchPath: ['.tmp', 'app', '.']});
