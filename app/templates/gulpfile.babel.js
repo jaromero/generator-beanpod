@@ -55,7 +55,18 @@ function coffeelint(files, options) {
       .pipe($.coffeelint.reporter(require('coffeelint-stylish')))
       .pipe($.if(!browserSync.active, $.coffeelint.reporter('fail')));
   };
-}
+}<% if (includeSass) { %>
+function scsslint(files, options) {
+  return () => {
+    return gulp.src(files)
+      .pipe(reload({stream: true, once: true}))
+      .pipe($.scsslint(Object.assign({}, options, {
+        config: 'scss-lint.yml',
+        reporterOutputFormat: 'Checkstyle'
+      })))
+      .pipe($.if(!browserSync.active, $.scssLint.failReporter('E')));
+  };
+}<% } %>
 const testLintOptions = {
   env: {
 <% if (testFramework === 'mocha') { -%>
@@ -70,6 +81,10 @@ gulp.task('eslint', eslint('app/scripts/**/*.js'));
 gulp.task('eslint:test', eslint('test/spec/**/*.js', testLintOptions));
 
 gulp.task('coffeelint', coffeelint('app/scripts/**/*.coffee'));
+<% if (includeSass) { %>
+gulp.task('scsslint', scsslint('app/styles/**/*.scss'));<% } %>
+
+gulp.task('lint', ['eslint', 'coffeelint'<% if (includeSass) { %>, 'scsslint'<% } %>]);
 
 gulp.task('html', ['styles', 'scripts'<% if (includeJade) { %>, 'views'<% } %>], () => {
   const assets = $.useref.assets({searchPath: ['.tmp', 'app', '.']});

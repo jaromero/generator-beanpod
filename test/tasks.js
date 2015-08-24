@@ -18,6 +18,7 @@ describe('gulp tasks', function () {
       'eslint',
       'eslint:test',
       'coffeelint',
+      'lint',
       'html',
       'images',
       'fonts',

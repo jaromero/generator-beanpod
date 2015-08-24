@@ -228,6 +228,13 @@ module.exports = generators.Base.extend({
           includeBootstrap: this.includeBootstrap
         }
       );
+
+      if (this.includeSass) {
+        this.fs.copy(
+          this.templatePath('scss-lint.yml'),
+          this.destinationPath('scss-lint.yml')
+        );
+      }
     },
 
     scripts: function () {
