@@ -228,12 +228,24 @@ module.exports = generators.Base.extend({
           includeBootstrap: this.includeBootstrap
         }
       );
+
+      if (this.includeSass) {
+        this.fs.copy(
+          this.templatePath('scss-lint.yml'),
+          this.destinationPath('scss-lint.yml')
+        );
+      }
     },
 
     scripts: function () {
       this.fs.copy(
         this.templatePath('main.coffee'),
         this.destinationPath('app/scripts/main.coffee')
+      );
+
+      this.fs.copy(
+        this.templatePath('coffeelint.json'),
+        this.destinationPath('coffeelint.json')
       );
     },
 

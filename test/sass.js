@@ -18,6 +18,14 @@ describe('Sass feature', function () {
     it('should create an SCSS file', function () {
       assert.file('app/styles/main.scss');
     });
+
+    it('should create a scss-lint.yml file', function () {
+      assert.file('scss-lint.yml');
+    });
+
+    it('should contain necessary tasks', function () {
+      assert.fileContent('gulpfile.babel.js', 'gulp.task(\'scsslint');
+    })
   });
 
   describe('off', function () {
