@@ -40,7 +40,8 @@ describe('general', function () {
       'app/images',
       'app/fonts',
       'test',
-      'coffeelint.json'
+      'coffeelint.json',
+      'e2e'
     ]);
   });
 });

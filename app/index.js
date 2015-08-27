@@ -308,6 +308,16 @@ module.exports = generators.Base.extend({
       }
     },
 
+    webdriver: function () {
+      this.fs.copyTpl(
+        this.templatePath('e2e-index-test.js'),
+        this.destinationPath('e2e/index/test.js'),
+        {
+          appname: this.appname
+        }
+      )
+    },
+
     misc: function () {
       mkdirp('app/images');
       mkdirp('app/fonts');

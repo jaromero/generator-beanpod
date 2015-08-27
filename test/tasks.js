@@ -24,6 +24,8 @@ describe('gulp tasks', function () {
       'fonts',
       'extras',
       'clean',
+      'e2e',
+      'e2e:chrome',
       'serve',
       'serve:dist',
       'serve:test',
