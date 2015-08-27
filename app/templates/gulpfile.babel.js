@@ -135,7 +135,7 @@ gulp.task('extras', () => {
 
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
-gulp.task('serve', ['styles', 'fonts', 'scripts'<% if (includeJade) { %>, 'views'<% } %>], () => {
+gulp.task('browser', ['styles', 'fonts', 'scripts'<% if (includeJade) { %>, 'views'<% } %>], () => {
   browserSync({
     notify: false,
     port: 9000,
@@ -146,7 +146,24 @@ gulp.task('serve', ['styles', 'fonts', 'scripts'<% if (includeJade) { %>, 'views
       }
     }
   });
+});
 
+gulp.task('browser:e2e', ['styles', 'fonts', 'scripts'<% if (includeJade) { %>, 'views'<% } %>], () => {
+  browserSync({
+    notify: false,
+    port: 9000,
+    ui: false,
+    open: false,
+    server: {
+      baseDir: ['.tmp', 'app'],
+      routes: {
+        '/bower_components': 'bower_components'
+      }
+    }
+  });
+});
+
+gulp.task('serve', ['browser'], () => {
   gulp.watch([
     'app/*.html',<% if (includeJade) { %>
     '.tmp/*.html',<% } %>
@@ -162,6 +179,8 @@ gulp.task('serve', ['styles', 'fonts', 'scripts'<% if (includeJade) { %>, 'views
   gulp.watch('app/fonts/**/*', ['fonts']);
   gulp.watch('bower.json', ['wiredep', 'fonts']);
 });
+
+gulp.task('serve:e2e', ['browser:e2e']);
 
 gulp.task('serve:dist', () => {
   browserSync({
@@ -188,6 +207,51 @@ gulp.task('serve:test', () => {
 
   gulp.watch('test/spec/**/*.js').on('change', reload);
   gulp.watch('test/spec/**/*.js', ['lint:test']);
+});
+
+gulp.task('e2e', ['serve:e2e'], () => {
+  return gulp.src('e2e/**/*.js', { read: false })
+    .pipe($.webdriver({
+      desiredCapabilities: {
+        browserName: 'firefox'
+      },
+      seleniumOptions: {
+        version: '2.47.1'
+      },
+      seleniumInstallOptions: {
+        version: '2.47.1',
+        baseURL: 'http://selenium-release.storage.googleapis.com'
+      }
+    }))
+    .once('end', function () {
+      browserSync.exit();
+    });
+});
+
+gulp.task('e2e:chrome', ['serve:e2e'], () => {
+  return gulp.src('e2e/**/*.js', { read: false })
+    .pipe($.webdriver({
+      desiredCapabilities: {
+        browserName: 'chrome'
+      },
+      seleniumOptions: {
+        version: '2.47.1'
+      },
+      seleniumInstallOptions: {
+        version: '2.47.1',
+        baseURL: 'http://selenium-release.storage.googleapis.com',
+        drivers: {
+          chrome: {
+            version: '2.18',
+            arch: process.arch,
+            baseURL: 'http://chromedriver.storage.googleapis.com'
+          }
+        }
+      }
+    }))
+    .once('end', function () {
+      browserSync.exit();
+    });
 });
 
 // inject bower components
