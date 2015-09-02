@@ -41,6 +41,7 @@ describe('general', function () {
       'app/fonts',
       'test',
       'coffeelint.json',
+      'eslint.json',
       'e2e'
     ]);
   });

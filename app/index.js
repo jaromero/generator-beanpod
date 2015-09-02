@@ -263,6 +263,11 @@ module.exports = generators.Base.extend({
         this.templatePath('coffeelint.json'),
         this.destinationPath('coffeelint.json')
       );
+
+      this.fs.copy(
+        this.templatePath('eslint.json'),
+        this.destinationPath('eslint.json')
+      );
     },
 
     html: function () {

@@ -1,12 +1,13 @@
 # generated on <%= date %> using <%= name %> <%= version %>
-gulp = require 'gulp'
+gulp        = require 'gulp'
+$           = require('gulp-load-plugins')()
 browserSync = require 'browser-sync'
-del = require 'del'
-wiredep = require('wiredep').stream
+del         = require 'del'
+wiredep     = require('wiredep').stream
+assign      = require 'lodash.assign'
 
 reload = browserSync.reload
 
-$ = require('gulp-load-plugins')()
 
 gulp.task 'styles', -><% if (includeSass) { %>
   gulp.src 'app/styles/*.scss'
@@ -41,7 +42,8 @@ eslint = (files, opts) ->
   ->
     gulp.src files
       .pipe reload {stream: true, once: true}
-      .pipe $.eslint opts
+      .pipe $.eslint assign {}, opts,
+        configFile: 'eslint.json'
       .pipe $.eslint.format()
       .pipe $.if (not browserSync.active), $.eslint.failAfterError()
 
@@ -55,7 +57,6 @@ coffeelint = (files, opts) ->
 <% if (includeSass) { %>
 scsslint = (files, opts) ->
   ->
-    assign = require 'lodash.assign'
     gulp.src files
       .pipe reload {stream: true, once: true}
       .pipe $.scsslint assign {}, opts,
@@ -69,7 +70,7 @@ testLintOptions =
     <% if (testFramework === 'jasmine') { %>jasmine: true<% } %>
 
 gulp.task 'eslint', eslint 'app/scrips/**/*.js'
-gulp.task 'eslint:test', eslint 'test/spec/**/*.js'
+gulp.task 'eslint:test', eslint 'test/spec/**/*.js', testLintOptions
 
 gulp.task 'coffeelint', coffeelint 'app/scripts/**/*.coffee'
 <% if (includeSass) { %>
