@@ -74,6 +74,10 @@ module.exports = generators.Base.extend({
         name: 'Jade',
         value: 'includeJade',
         checked: true
+      }, {
+        name: 'Gulpfile in CoffeeScript',
+        value: 'coffeeGulpfile',
+        checked: false
       }]
     }, {
       type: 'confirm',
@@ -98,6 +102,7 @@ module.exports = generators.Base.extend({
       this.includeBootstrap = hasFeature('includeBootstrap');
       this.includeModernizr = hasFeature('includeModernizr');
       this.includeJade = hasFeature('includeJade');
+      this.coffeeGulpfile = hasFeature('coffeeGulpfile');
       this.includeJQuery = answers.includeJQuery;
 
       done();
@@ -106,9 +111,19 @@ module.exports = generators.Base.extend({
 
   writing: {
     gulpfile: function () {
+      var gulpfileTpl;
+      var gulpfileDest;
+      if (this.coffeeGulpfile) {
+        gulpfileTpl = this.templatePath('gulpfile.coffee');
+        gulpfileDest = this.destinationPath('gulpfile.coffee');
+      } else {
+        gulpfileTpl = this.templatePath('gulpfile.babel.js');
+        gulpfileDest = this.destinationPath('gulpfile.babel.js');
+      }
+
       this.fs.copyTpl(
-        this.templatePath('gulpfile.babel.js'),
-        this.destinationPath('gulpfile.babel.js'),
+        gulpfileTpl,
+        gulpfileDest,
         {
           date: (new Date).toISOString().split('T')[0],
           name: this.pkg.name,
@@ -127,7 +142,8 @@ module.exports = generators.Base.extend({
         this.destinationPath('package.json'),
         {
           includeSass: this.includeSass,
-          includeJade: this.includeJade
+          includeJade: this.includeJade,
+          coffeeGulpfile: this.coffeeGulpfile
         }
       );
     },

@@ -3,11 +3,12 @@
   "engines": {
     "node": ">=0.12.0"
   },
-  "devDependencies": {
-    "babel-core": "^5.5.6",
+  "devDependencies": {<% if (!coffeeGulpfile) { %>
+    "babel-core": "^5.5.6",<% } %>
     "browser-sync": "^2.2.1",
     "chai": "^3.2.0",
-    "chai-as-promised": "^5.1.0",
+    "chai-as-promised": "^5.1.0",<% if (coffeeGulpfile) { %>
+    "coffee-script": "^1.9.3",<% } %>
     "coffeelint-stylish": "^0.1.2",
     "del": "^1.1.1",
     "gulp": "^3.9.0",
@@ -31,7 +32,8 @@
     "gulp-uglify": "^1.1.0",
     "gulp-useref": "^1.1.1",
     "gulp-webdriver": "^0.1.1",
-    "main-bower-files": "^2.5.0",
+    "main-bower-files": "^2.5.0",<% if (coffeeGulpfile) { %>
+    "lodash": "^3.10.1",<% } %>
     "opn": "^1.0.1",
     "wiredep": "^2.2.2"
   }
