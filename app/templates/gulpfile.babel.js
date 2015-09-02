@@ -206,7 +206,7 @@ gulp.task('serve:test', () => {
   });
 
   gulp.watch('test/spec/**/*.js').on('change', reload);
-  gulp.watch('test/spec/**/*.js', ['lint:test']);
+  gulp.watch('test/spec/**/*.js', ['eslint:test']);
 });
 
 gulp.task('e2e', ['serve:e2e'], () => {
