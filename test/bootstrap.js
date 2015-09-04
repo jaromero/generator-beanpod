@@ -48,7 +48,6 @@ describe('Bootstrap feature', function () {
         .inDir(path.join(__dirname, 'temp'))
         .withOptions({'skip-install': true})
         .withPrompts({features: [
-          'includeSass',
           'includeBootstrap'
         ]})
         .on('end', done);
@@ -74,38 +73,6 @@ describe('Bootstrap feature', function () {
       assert.fileContent('bower.json', 'assets/fonts/bootstrap/*');
 
       assert.fileContent('bower.json', 'assets/javascripts/bootstrap.js');
-    });
-  });
-
-  describe('without Sass', function () {
-    before(function (done) {
-      helpers.run(path.join(__dirname, '../app'))
-        .inDir(path.join(__dirname, 'temp'))
-        .withOptions({'skip-install': true})
-        .withPrompts({features: [
-          'includeBootstrap'
-        ]})
-        .on('end', done);
-    });
-
-    it('should use Bootstrap', function () {
-      assert.fileContent('bower.json', '"bootstrap"');
-    });
-
-    it('should output the correct <script> paths', function () {
-      assert.fileContent('app/index.html', /src=\"(.*?)\/bootstrap\/js\//);
-    });
-
-    it('should correctly override bootstrap\'s bower.json', function() {
-      assert.fileContent('bower.json', '"overrides"');
-
-      assert.fileContent('bower.json', 'less/bootstrap.less');
-
-      assert.fileContent('bower.json', 'dist/css/bootstrap.css');
-
-      assert.fileContent('bower.json', 'dist/js/bootstrap.js');
-
-      assert.fileContent('bower.json', 'dist/fonts/*');
     });
   });
 });

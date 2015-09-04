@@ -59,10 +59,6 @@ module.exports = generators.Base.extend({
       name: 'features',
       message: 'What more would you like?',
       choices: [{
-        name: 'Sass',
-        value: 'includeSass',
-        checked: true
-      }, {
         name: 'Bootstrap',
         value: 'includeBootstrap',
         checked: true
@@ -92,13 +88,12 @@ module.exports = generators.Base.extend({
     this.prompt(prompts, function (answers) {
       var features = answers.features;
 
-      function hasFeature(feat) {
+      function hasFeature (feat) {
         return features && features.indexOf(feat) !== -1;
-      };
+      }
 
       // manually deal with the response, get back and store the results.
       // we change a bit this way of doing to automatically do this in the self.prompt() method.
-      this.includeSass = hasFeature('includeSass');
       this.includeBootstrap = hasFeature('includeBootstrap');
       this.includeModernizr = hasFeature('includeModernizr');
       this.includeJade = hasFeature('includeJade');
@@ -111,8 +106,8 @@ module.exports = generators.Base.extend({
 
   writing: {
     gulpfile: function () {
-      var gulpfileTpl;
-      var gulpfileDest;
+      var gulpfileTpl, gulpfileDest;
+
       if (this.coffeeGulpfile) {
         gulpfileTpl = this.templatePath('gulpfile.coffee');
         gulpfileDest = this.destinationPath('gulpfile.coffee');
@@ -128,7 +123,6 @@ module.exports = generators.Base.extend({
           date: (new Date).toISOString().split('T')[0],
           name: this.pkg.name,
           version: this.pkg.version,
-          includeSass: this.includeSass,
           includeBootstrap: this.includeBootstrap,
           includeJade: this.includeJade,
           testFramework: this.options['test-framework']
@@ -141,7 +135,6 @@ module.exports = generators.Base.extend({
         this.templatePath('_package.json'),
         this.destinationPath('package.json'),
         {
-          includeSass: this.includeSass,
           includeJade: this.includeJade,
           coffeeGulpfile: this.coffeeGulpfile
         }
@@ -166,30 +159,16 @@ module.exports = generators.Base.extend({
       };
 
       if (this.includeBootstrap) {
-        if (this.includeSass) {
-          bowerJson.dependencies['bootstrap-sass'] = '~3.3.5';
-          bowerJson.overrides = {
-            'bootstrap-sass': {
-              'main': [
-                'assets/stylesheets/_bootstrap.scss',
-                'assets/fonts/bootstrap/*',
-                'assets/javascripts/bootstrap.js'
-              ]
-            }
-          };
-        } else {
-          bowerJson.dependencies['bootstrap'] = '~3.3.5';
-          bowerJson.overrides = {
-            'bootstrap': {
-              'main': [
-                'less/bootstrap.less',
-                'dist/css/bootstrap.css',
-                'dist/js/bootstrap.js',
-                'dist/fonts/*'
-              ]
-            }
-          };
-        }
+        bowerJson.dependencies['bootstrap-sass'] = '~3.3.5';
+        bowerJson.overrides = {
+          'bootstrap-sass': {
+            'main': [
+              'assets/stylesheets/_bootstrap.scss',
+              'assets/fonts/bootstrap/*',
+              'assets/javascripts/bootstrap.js'
+            ]
+          }
+        };
       } else if (this.includeJQuery) {
         bowerJson.dependencies['jquery'] = '~2.1.1';
       }
@@ -229,28 +208,18 @@ module.exports = generators.Base.extend({
     },
 
     styles: function () {
-      var css = 'main';
-
-      if (this.includeSass) {
-        css += '.scss';
-      } else {
-        css += '.css';
-      }
-
       this.fs.copyTpl(
-        this.templatePath(css),
-        this.destinationPath('app/styles/' + css),
+        this.templatePath('main.scss'),
+        this.destinationPath('app/styles/main.scss'),
         {
           includeBootstrap: this.includeBootstrap
         }
       );
 
-      if (this.includeSass) {
-        this.fs.copy(
-          this.templatePath('scss-lint.yml'),
-          this.destinationPath('scss-lint.yml')
-        );
-      }
+      this.fs.copy(
+        this.templatePath('scss-lint.yml'),
+        this.destinationPath('scss-lint.yml')
+      );
     },
 
     scripts: function () {
@@ -274,15 +243,7 @@ module.exports = generators.Base.extend({
       var bsPath, bsPlugins, tplOptions;
 
       // path prefix for Bootstrap JS files
-      if (this.includeBootstrap) {
-        bsPath = '/bower_components/';
-
-        if (this.includeSass) {
-          bsPath += 'bootstrap-sass/assets/javascripts/bootstrap/';
-        } else {
-          bsPath += 'bootstrap/js/';
-        }
-      }
+      bsPath = '/bower_components/bootstrap-sass/assets/javascripts/bootstrap/';
 
       bsPlugins = [
         'affix',
@@ -301,13 +262,12 @@ module.exports = generators.Base.extend({
 
       tplOptions = {
         appname: this.appname,
-        includeSass: this.includeSass,
         includeBootstrap: this.includeBootstrap,
         includeModernizr: this.includeModernizr,
         includeJQuery: this.includeJQuery,
         bsPath: bsPath,
         bsPlugins: bsPlugins
-      }
+      };
 
       if (this.includeJade) {
         this.fs.copyTpl(
@@ -319,7 +279,7 @@ module.exports = generators.Base.extend({
           this.templatePath('index.jade'),
           this.destinationPath('app/index.jade'),
           tplOptions
-        )
+        );
       } else {
         this.fs.copyTpl(
           this.templatePath('index.html'),
@@ -336,7 +296,7 @@ module.exports = generators.Base.extend({
         {
           appname: this.appname
         }
-      )
+      );
     },
 
     misc: function () {
@@ -376,20 +336,20 @@ module.exports = generators.Base.extend({
       exclude: ['bootstrap-sass', 'bootstrap.js'],
       ignorePath: /^(\.\.\/)*\.\./,
       src: 'app/index.html'
-    }
+    };
+
     if (this.includeJade) {
-      wiredepOpts.src = 'app/layouts/default.jade'
+      wiredepOpts.src = 'app/layouts/default.jade';
     }
+
     wiredep(wiredepOpts);
 
-    if (this.includeSass) {
-      // wire Bower packages to .scss
-      wiredep({
-        bowerJson: bowerJson,
-        directory: 'bower_components',
-        ignorePath: /^(\.\.\/)+/,
-        src: 'app/styles/*.scss'
-      });
-    }
+    // wire Bower packages to .scss
+    wiredep({
+      bowerJson: bowerJson,
+      directory: 'bower_components',
+      ignorePath: /^(\.\.\/)+/,
+      src: 'app/styles/*.scss'
+    });
   }
 });

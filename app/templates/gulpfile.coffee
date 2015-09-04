@@ -9,7 +9,7 @@ assign      = require('lodash').assign
 reload = browserSync.reload
 
 
-gulp.task 'styles', -><% if (includeSass) { %>
+gulp.task 'styles', ->
   gulp.src 'app/styles/*.scss'
     .pipe $.plumber()
     .pipe $.sourcemaps.init()
@@ -17,9 +17,7 @@ gulp.task 'styles', -><% if (includeSass) { %>
       outputStyle: 'expanded'
       precision: 10
       includePaths: ['.']
-    .on 'error', $.sass.logError<% } else { %>
-  gulp.src 'app/styles/*.css'
-    .pipe $.sourcemaps.init()<% } %>
+    .on 'error', $.sass.logError
     .pipe $.autoprefixer {browsers: ['last 1 version']}
     .pipe $.sourcemaps.write()
     .pipe gulp.dest '.tmp/styles'
@@ -54,7 +52,7 @@ coffeelint = (files, opts) ->
       .pipe $.coffeelint opts
       .pipe $.coffeelint.reporter require 'coffeelint-stylish'
       .pipe $.if (not browserSync.active), $.coffeelint.reporter 'fail'
-<% if (includeSass) { %>
+
 scsslint = (files, opts) ->
   ->
     gulp.src files
@@ -62,7 +60,7 @@ scsslint = (files, opts) ->
       .pipe $.scsslint assign {}, opts,
         config: 'scss-lint.yml'
         reporterOutputFormat: 'Checkstyle'
-      .pipe $.if (not browserSync.active), $.scssLint.failReporter 'E'<% } %>
+      .pipe $.if (not browserSync.active), $.scssLint.failReporter 'E'
 
 testLintOptions =
   env:
@@ -73,10 +71,10 @@ gulp.task 'eslint', eslint 'app/scrips/**/*.js'
 gulp.task 'eslint:test', eslint 'test/spec/**/*.js', testLintOptions
 
 gulp.task 'coffeelint', coffeelint 'app/scripts/**/*.coffee'
-<% if (includeSass) { %>
-gulp.task 'scsslint', scsslint 'app/styles/**/*.scss'<% } %>
 
-gulp.task 'lint', ['eslint', 'coffeelint'<% if (includeSass) { %>, 'scsslint'<% } %>]
+gulp.task 'scsslint', scsslint 'app/styles/**/*.scss'
+
+gulp.task 'lint', ['eslint', 'coffeelint', 'scsslint']
 
 gulp.task 'html', ['styles', 'scripts'<% if (includeJade) { %>, 'views'<% } %>], ->
   assets = $.useref.assets {searchPath: ['.tmp', 'app', '.']}
@@ -154,7 +152,7 @@ gulp.task 'serve', ['browser'], ->
   .on 'change', reload
   <% if (includeJade) { %>
   gulp.watch 'app/**/*.jade', ['views']<% } %>
-  gulp.watch 'app/styles/**/*.<%= includeSass ? 'scss' : 'css' %>', ['styles']
+  gulp.watch 'app/styles/**/*.scss', ['styles']
   gulp.watch 'app/scripts/**/*.{coffee,litcoffee}', ['scripts']
   gulp.watch 'app/fonts/**/*', ['fonts']
   gulp.watch 'bower.json', ['wiredep', 'fonts']
@@ -213,17 +211,16 @@ gulp.task 'e2e:chrome', ['serve:e2e'], ->
       browserSync.exit()
 
 # inject bower components
-gulp.task 'wiredep', -><% if (includeSass) { %>
+gulp.task 'wiredep', ->
   gulp.src 'app/styles/*.scss'
     .pipe wiredep
       ignorePath: /^(\.\.\/)+/
     .pipe gulp.dest 'app/styles'
-<% } if (includeJade) { %>
+<% if (includeJade) { %>
   gulp.src 'app/layouts/*.jade'<% } else { %>
   gulp.src 'app/*.html'<% } %>
-    .pipe wiredep<% if (includeBootstrap) { if (includeSass) { %>
-      exclude: ['bootstrap-sass']<% } else { %>
-      exclude: ['bootstrap.js']<% }} %>
+    .pipe wiredep<% if (includeBootstrap) { %>
+      exclude: ['bootstrap-sass']<% } %>
       ignorePath: /^(\.\.\/)*\.\./
     .pipe gulp.dest 'app'
 
