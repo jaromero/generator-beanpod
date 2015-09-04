@@ -4,7 +4,7 @@ $           = require('gulp-load-plugins')()
 browserSync = require 'browser-sync'
 del         = require 'del'
 wiredep     = require('wiredep').stream
-assign      = require 'lodash.assign'
+assign      = require('lodash').assign
 
 reload = browserSync.reload
 
