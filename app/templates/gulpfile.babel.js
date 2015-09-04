@@ -8,7 +8,7 @@ import {stream as wiredep} from 'wiredep';
 const $ = gulpLoadPlugins();
 const reload = browserSync.reload;
 
-gulp.task('styles', () => {<% if (includeSass) { %>
+gulp.task('styles', () => {
   return gulp.src('app/styles/*.scss')
     .pipe($.plumber())
     .pipe($.sourcemaps.init())
@@ -16,9 +16,7 @@ gulp.task('styles', () => {<% if (includeSass) { %>
       outputStyle: 'expanded',
       precision: 10,
       includePaths: ['.']
-    }).on('error', $.sass.logError))<% } else { %>
-  return gulp.src('app/styles/*.css')
-    .pipe($.sourcemaps.init())<% } %>
+    }).on('error', $.sass.logError))
     .pipe($.autoprefixer({browsers: ['last 1 version']}))
     .pipe($.sourcemaps.write())
     .pipe(gulp.dest('.tmp/styles'))
@@ -57,7 +55,7 @@ function coffeelint(files, options) {
       .pipe($.coffeelint.reporter(require('coffeelint-stylish')))
       .pipe($.if(!browserSync.active, $.coffeelint.reporter('fail')));
   };
-}<% if (includeSass) { %>
+}
 function scsslint(files, options) {
   return () => {
     return gulp.src(files)
@@ -68,7 +66,7 @@ function scsslint(files, options) {
       })))
       .pipe($.if(!browserSync.active, $.scssLint.failReporter('E')));
   };
-}<% } %>
+}
 const testLintOptions = {
   env: {
 <% if (testFramework === 'mocha') { -%>
@@ -83,10 +81,10 @@ gulp.task('eslint', eslint('app/scripts/**/*.js'));
 gulp.task('eslint:test', eslint('test/spec/**/*.js', testLintOptions));
 
 gulp.task('coffeelint', coffeelint('app/scripts/**/*.coffee'));
-<% if (includeSass) { %>
-gulp.task('scsslint', scsslint('app/styles/**/*.scss'));<% } %>
 
-gulp.task('lint', ['eslint', 'coffeelint'<% if (includeSass) { %>, 'scsslint'<% } %>]);
+gulp.task('scsslint', scsslint('app/styles/**/*.scss'));
+
+gulp.task('lint', ['eslint', 'coffeelint', 'scsslint']);
 
 gulp.task('html', ['styles', 'scripts'<% if (includeJade) { %>, 'views'<% } %>], () => {
   const assets = $.useref.assets({searchPath: ['.tmp', 'app', '.']});
@@ -176,7 +174,7 @@ gulp.task('serve', ['browser'], () => {
   ]).on('change', reload);
   <% if (includeJade) { %>
   gulp.watch('app/**/*.jade', ['views']); <% } %>
-  gulp.watch('app/styles/**/*.<%= includeSass ? 'scss' : 'css' %>', ['styles']);
+  gulp.watch('app/styles/**/*.scss', ['styles']);
   gulp.watch('app/scripts/**/*.{coffee,litcoffee}', ['scripts']);
   gulp.watch('app/fonts/**/*', ['fonts']);
   gulp.watch('bower.json', ['wiredep', 'fonts']);
@@ -257,18 +255,17 @@ gulp.task('e2e:chrome', ['serve:e2e'], () => {
 });
 
 // inject bower components
-gulp.task('wiredep', () => {<% if (includeSass) { %>
+gulp.task('wiredep', () => {
   gulp.src('app/styles/*.scss')
     .pipe(wiredep({
       ignorePath: /^(\.\.\/)+/
     }))
     .pipe(gulp.dest('app/styles'));
-<% } if (includeJade) { %>
+<% if (includeJade) { %>
   gulp.src('app/layouts/*.jade')<% } else { %>
   gulp.src('app/*.html')<% } %>
-    .pipe(wiredep({<% if (includeBootstrap) { if (includeSass) { %>
-      exclude: ['bootstrap-sass'],<% } else { %>
-      exclude: ['bootstrap.js'],<% }} %>
+    .pipe(wiredep({<% if (includeBootstrap) { %>
+      exclude: ['bootstrap-sass'],<% } %>
       ignorePath: /^(\.\.\/)*\.\./
     }))
     .pipe(gulp.dest('app'));

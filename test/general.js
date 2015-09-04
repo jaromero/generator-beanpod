@@ -36,7 +36,7 @@ describe('general', function () {
       'app/robots.txt',
       'app/index.html',
       'app/scripts/main.coffee',
-      'app/styles/main.css',
+      'app/styles/main.scss',
       'app/images',
       'app/fonts',
       'test',
