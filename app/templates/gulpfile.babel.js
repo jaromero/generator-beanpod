@@ -267,8 +267,9 @@ gulp.task('wiredep', () => {
     .pipe(wiredep({<% if (includeBootstrap) { %>
       exclude: ['bootstrap-sass'],<% } %>
       ignorePath: /^(\.\.\/)*\.\./
-    }))
-    .pipe(gulp.dest('app'));
+    }))<% if (includeJade) { %>
+    .pipe(gulp.dest('app/layouts'));<% } else { %>
+    .pipe(gulp.dest('app'));<% } %>
 });
 
 gulp.task('build', ['lint', 'html', 'images', 'fonts', 'extras'], () => {
