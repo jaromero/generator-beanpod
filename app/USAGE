@@ -1,10 +1,11 @@
 Description:
-    Creates a new basic front-end web application.
+    Creates a new basic front-end web app with Jade and Coffeescript.
 
 Options:
     Sass: Include Sass
     Bootstrap: Include Bootstrap or Bootstrap Sass if Sass is included
     Modernizr: Include Modernizr
+    Gulpfile in Coffeescript: Include a gulpfile.coffee instead of ES6
 
 Example:
     yo gulp-webapp
@@ -16,3 +17,4 @@ Example:
 
         app/: Your application files.
         test/: Unit tests for your application.
+        e2e/: E2E tests for your app via Selenium/Webdriver

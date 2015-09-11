@@ -2,6 +2,9 @@
 
 ![](screenshot.png)
 
+## Why beanpod?
+
+Jade is green, coffee is beans, and I'm not actually that creative.
 
 ## Features
 
