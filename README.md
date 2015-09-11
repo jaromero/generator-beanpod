@@ -11,12 +11,13 @@ Please see our [gulpfile](app/templates/gulpfile.babel.js) for up to date inform
 * Built-in preview server with BrowserSync
 * Templating with [jade](http://jade-lang.com)
 * Automagically compile Sass with [libsass](http://libsass.org)
-* Automagically lint your scripts
+* Lint your scripts and styles with [coffeelint](http://www.coffeelint.org/) and [scss-lint](https://github.com/brigade/scss-lint)
 * Map compiled CSS to source stylesheets with source maps
 * Awesome image optimization
 * Automagically wire-up dependencies installed with [Bower](http://bower.io)
 * CoffeeScript support enabled by default
-* The gulpfile makes use of [ES2015 features](https://babeljs.io/docs/learn-es2015/) by using [Babel](https://babeljs.io)
+* E2E testing using [webdriver](http://webdriver.io)
+* A gulpfile that makes use of [ES2015 features](https://babeljs.io/docs/learn-es2015/) by using [Babel](https://babeljs.io) (an optional gulpfile in coffeescript is available)
 
 *For more information on what this generator can do for you, take a look at the [gulp plugins](app/templates/_package.json) used in our `package.json`.*
 
@@ -31,11 +32,12 @@ If your favorite feature is missing and you really need Ruby Sass, you can alway
 ## Getting Started
 
 - Install dependencies: `npm install --global yo gulp bower`
-- Install the generator: `npm install --global generator-gulp-webapp`
-- Run `yo gulp-webapp` to scaffold your webapp
+- Install the generator: `npm install --global generator-beanpod`
+- Run `yo beanpod` to scaffold your webapp
 - Run `gulp serve` to preview and watch for changes
 - Run `bower install --save <package>` to install frontend dependencies
 - Run `gulp serve:test` to run the tests in the browser
+- Run `gulp e2e` to run E2E tests in Firefox, or `gulp e2e:chrome` to use Chrome
 - Run `gulp` to build your webapp for production
 - Run `gulp serve:dist` to preview the production build
 

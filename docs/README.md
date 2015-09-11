@@ -1,11 +1,11 @@
 # Getting Started
 
-Welcome to the [gulp] flavor of our web app generator! If you're not familiar with gulp, we suggest checking out [their docs][gulp-docs].
+Welcome to **beanpod**! If you're not familiar with gulp, we suggest checking out [their docs][gulp-docs].
 
 If you haven't already, install [yo] and this generator by running:
 
 ```sh
-$ npm install --global yo generator-gulp-webapp
+$ npm install --global yo generator-beanpod
 ```
 
 Now you can scaffold your very own web app:
@@ -13,7 +13,7 @@ Now you can scaffold your very own web app:
 ```sh
 $ mkdir my-webapp
 $ cd my-webapp
-$ yo gulp-webapp
+$ yo beanpod
 ```
 
 To start developing, run:
@@ -22,7 +22,7 @@ To start developing, run:
 $ gulp serve
 ```
 
-This will fire up a local web server, open http://localhost:9000 in your default browser and watch files for changes, reloading the browser automatically via [LiveReload].
+This will fire up a local web server, open http://localhost:9000 in your default browser and watch files for changes, reloading the browser automatically via [BrowserSync].
 
 To run the tests in the browser, run:
 
@@ -60,10 +60,10 @@ We use the `.tmp` directory mostly for compiling assets like SCSS files. It has 
 
 This system can be a little confusing with the `watch` task, but it's actually pretty simple:
 
-* notify LiveReload when compiled assets change
+* notify BrowserSync when compiled assets change
 * run the compile task when source assets change
 
-E.g. if you have Less files, you would want to notify LiveReload when Less files have compiled, i.e. when `.tmp/styles/**/*.css` change, but you would want to compile Less files by running the `styles` task when source files change, i.e. `app/styles/**/*.less`.
+E.g. if you have Less files, you would want to notify BrowserSync when Less files have compiled, i.e. when `.tmp/styles/**/*.css` change, but you would want to compile Less files by running the `styles` task when source files change, i.e. `app/styles/**/*.less`.
 
 ## Bower
 
@@ -91,12 +91,12 @@ These are a bit tricky, as they can't be automatically injected. Ideally you wou
 
 If there's a problem, it's usually with the `main` field, which wiredep uses to wire up assets. Fortunately you can always [override][override] these fields and send a pull request to that component's repository, fixing their `bower.json` :wink:
 
-[gulp]:       https://github.com/gulpjs/gulp
-[gulp-docs]:  https://github.com/gulpjs/gulp/blob/master/docs/README.md
-[yo]:         https://github.com/yeoman/yo
-[LiveReload]: https://github.com/intesso/connect-livereload
-[plugins]:    https://github.com/jackfranklin/gulp-load-plugins
-[calc]:       https://github.com/postcss/postcss-calc
-[wiredep]:    https://github.com/taptapship/wiredep
-[replace]:    https://github.com/lazd/gulp-replace
-[override]:   https://github.com/taptapship/wiredep#bower-overrides
+[gulp]:        https://github.com/gulpjs/gulp
+[gulp-docs]:   https://github.com/gulpjs/gulp/blob/master/docs/README.md
+[yo]:          https://github.com/yeoman/yo
+[BrowserSync]: https://browsersync.io
+[plugins]:     https://github.com/jackfranklin/gulp-load-plugins
+[calc]:        https://github.com/postcss/postcss-calc
+[wiredep]:     https://github.com/taptapship/wiredep
+[replace]:     https://github.com/lazd/gulp-replace
+[override]:    https://github.com/taptapship/wiredep#bower-overrides
