@@ -179,29 +179,27 @@ gulp.task 'serve:test', ->
   gulp.watch('test/spec/**/*.js').on 'change', reload
   gulp.watch 'test/spec/**/*.js', ['eslint:test']
 
+webdriverOpts =
+  desiredCapabilities:
+    browserName: 'firefox'
+  seleniumOptions:
+    version: '2.47.1'
+  seleniumInstallOptions:
+    version: '2.47.1'
+    baseURL: 'http://selenium-release.storage.googleapis.com'
+
 gulp.task 'e2e', ['serve:e2e'], ->
   gulp.src 'e2e/**/*.js', {read: false}
-    .pipe $.webdriver
-      desiredCapabilities:
-        browserName: 'firefox'
-      seleniumOptions:
-        version: '2.47.1'
-      seleniumInstallOptions:
-        version: '2.47.1'
-        baseURL: 'http://selenium-release.storage.googleapis.com'
+    .pipe $.webdriver webdriverOpts
     .once 'end', ->
       browserSync.exit()
 
 gulp.task 'e2e:chrome', ['serve:e2e'], ->
   gulp.src 'e2e/**/*.js', {read: false}
-    .pipe $.webdriver
+    .pipe $.webdriver assign {}, webdriverOpts,
       desiredCapabilities:
-        browserName: 'firefox'
-      seleniumOptions:
-        version: '2.47.1'
+        browserName: 'chrome'
       seleniumInstallOptions:
-        version: '2.47.1'
-        baseURL: 'http://selenium-release.storage.googleapis.com'
         drivers:
           chrome:
             version: '2.18'
