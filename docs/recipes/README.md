@@ -1,9 +1,7 @@
 # Recipes
 
-- [CoffeeScript](coffeescript.md)
 - [Handlebars](handlebars.md)
 - [Less](less.md)
-- [Jade](jade.md)
 - [GitHub Pages](gh-pages.md)
 - [Asset revisioning](asset-revisioning.md)
 - [React](react.md)
@@ -22,25 +20,25 @@
 If you haven't already, clone the generator and link it:
 
 ```sh
-$ git clone https://github.com/yeoman/generator-gulp-webapp
-$ cd generator-gulp-webapp
+$ git clone https://github.com/jaromero/generator-beanpod
+$ cd generator-beanpod
 $ npm link
 $ cd ../
 ```
 
-Now the `yo gulp-webapp` command will use that version of the generator. To make sure this is actually true:
+Now the `yo beanpod` command will use that version of the generator. To make sure this is actually true:
 
 ```sh
-$ npm ls -g generator-gulp-webapp
+$ npm ls -g generator-beanpod
 # you should get something like
 /usr/local/lib
-└── generator-gulp-webapp@0.1.0  -> /Users/username/generator-gulp-webapp
+└── generator-beanpod@0.1.0  -> /Users/username/generator-beanpod
 ```
 
 To update the generator, all you need to do is:
 
 ```sh
-$ cd generator-gulp-webapp
+$ cd generator-beanpod
 $ git pull origin master
 $ cd ../
 ```
@@ -51,7 +49,7 @@ Writing a recipe without actually testing it is very hard and error-prone, you s
 
 ```sh
 $ mkdir recipe-stylus && cd $_
-$ yo gulp-webapp
+$ yo beanpod
 # select all options
 ```
 
@@ -67,7 +65,7 @@ $ git commit -m "Initial commit"
 
 ### 4. Get your feature working
 
-Do whatever is necessary to get Stylus working, install required gulp plugins, change `gulpfile.js`, update styles etc.
+Do whatever is necessary to get Stylus working, install required gulp plugins, change `gulpfile.babel.js`, update styles etc.
 
 ### 5. Write the recipe
 
