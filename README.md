@@ -1,4 +1,4 @@
-> [Yeoman](http://yeoman.io) generator that scaffolds out a front-end web app using [gulp](http://gulpjs.com/) for the build process
+> [Yeoman](http://yeoman.io) generator that scaffolds out a front-end web app using [gulp](http://gulpjs.com/) for the build process. Heavily based on [generator-gulp-webapp](https://github.com/yeoman/generator-gulp-webapp).
 
 ![](screenshot.png)
 
