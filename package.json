@@ -26,7 +26,8 @@
     "jquery",
     "gulp",
     "coffeescript",
-    "jade"
+    "jade",
+    "sass"
   ],
   "dependencies": {
     "chalk": "^1.0.0",
