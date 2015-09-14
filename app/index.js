@@ -51,7 +51,7 @@ module.exports = generators.Base.extend({
     var done = this.async();
 
     if (!this.options['skip-welcome-message']) {
-      this.log(yosay('\'Allo \'allo! Out of the box I include HTML5 Boilerplate, jQuery, and a gulpfile to build your app.'));
+      this.log(yosay('\'Allo \'allo! Out of the box I include HTML5 Boilerplate, jQuery, sass, coffeescript, and a gulpfile to build your app.'));
     }
 
     var prompts = [{
@@ -59,10 +59,6 @@ module.exports = generators.Base.extend({
       name: 'features',
       message: 'What more would you like?',
       choices: [{
-        name: 'Sass',
-        value: 'includeSass',
-        checked: true
-      }, {
         name: 'Bootstrap',
         value: 'includeBootstrap',
         checked: true
@@ -70,6 +66,14 @@ module.exports = generators.Base.extend({
         name: 'Modernizr',
         value: 'includeModernizr',
         checked: true
+      }, {
+        name: 'Jade',
+        value: 'includeJade',
+        checked: true
+      }, {
+        name: 'Gulpfile in CoffeeScript',
+        value: 'coffeeGulpfile',
+        checked: false
       }]
     }, {
       type: 'confirm',
@@ -84,15 +88,16 @@ module.exports = generators.Base.extend({
     this.prompt(prompts, function (answers) {
       var features = answers.features;
 
-      function hasFeature(feat) {
+      function hasFeature (feat) {
         return features && features.indexOf(feat) !== -1;
-      };
+      }
 
       // manually deal with the response, get back and store the results.
       // we change a bit this way of doing to automatically do this in the self.prompt() method.
-      this.includeSass = hasFeature('includeSass');
       this.includeBootstrap = hasFeature('includeBootstrap');
       this.includeModernizr = hasFeature('includeModernizr');
+      this.includeJade = hasFeature('includeJade');
+      this.coffeeGulpfile = hasFeature('coffeeGulpfile');
       this.includeJQuery = answers.includeJQuery;
 
       done();
@@ -101,15 +106,25 @@ module.exports = generators.Base.extend({
 
   writing: {
     gulpfile: function () {
+      var gulpfileTpl, gulpfileDest;
+
+      if (this.coffeeGulpfile) {
+        gulpfileTpl = this.templatePath('gulpfile.coffee');
+        gulpfileDest = this.destinationPath('gulpfile.coffee');
+      } else {
+        gulpfileTpl = this.templatePath('gulpfile.babel.js');
+        gulpfileDest = this.destinationPath('gulpfile.babel.js');
+      }
+
       this.fs.copyTpl(
-        this.templatePath('gulpfile.babel.js'),
-        this.destinationPath('gulpfile.babel.js'),
+        gulpfileTpl,
+        gulpfileDest,
         {
           date: (new Date).toISOString().split('T')[0],
           name: this.pkg.name,
           version: this.pkg.version,
-          includeSass: this.includeSass,
           includeBootstrap: this.includeBootstrap,
+          includeJade: this.includeJade,
           testFramework: this.options['test-framework']
         }
       );
@@ -120,7 +135,8 @@ module.exports = generators.Base.extend({
         this.templatePath('_package.json'),
         this.destinationPath('package.json'),
         {
-          includeSass: this.includeSass
+          includeJade: this.includeJade,
+          coffeeGulpfile: this.coffeeGulpfile
         }
       );
     },
@@ -143,30 +159,16 @@ module.exports = generators.Base.extend({
       };
 
       if (this.includeBootstrap) {
-        if (this.includeSass) {
-          bowerJson.dependencies['bootstrap-sass'] = '~3.3.5';
-          bowerJson.overrides = {
-            'bootstrap-sass': {
-              'main': [
-                'assets/stylesheets/_bootstrap.scss',
-                'assets/fonts/bootstrap/*',
-                'assets/javascripts/bootstrap.js'
-              ]
-            }
-          };
-        } else {
-          bowerJson.dependencies['bootstrap'] = '~3.3.5';
-          bowerJson.overrides = {
-            'bootstrap': {
-              'main': [
-                'less/bootstrap.less',
-                'dist/css/bootstrap.css',
-                'dist/js/bootstrap.js',
-                'dist/fonts/*'
-              ]
-            }
-          };
-        }
+        bowerJson.dependencies['bootstrap-sass'] = '~3.3.5';
+        bowerJson.overrides = {
+          'bootstrap-sass': {
+            'main': [
+              'assets/stylesheets/_bootstrap.scss',
+              'assets/fonts/bootstrap/*',
+              'assets/javascripts/bootstrap.js'
+            ]
+          }
+        };
       } else if (this.includeJQuery) {
         bowerJson.dependencies['jquery'] = '~2.1.1';
       }
@@ -206,20 +208,17 @@ module.exports = generators.Base.extend({
     },
 
     styles: function () {
-      var css = 'main';
-
-      if (this.includeSass) {
-        css += '.scss';
-      } else {
-        css += '.css';
-      }
-
       this.fs.copyTpl(
-        this.templatePath(css),
-        this.destinationPath('app/styles/' + css),
+        this.templatePath('main.scss'),
+        this.destinationPath('app/styles/main.scss'),
         {
           includeBootstrap: this.includeBootstrap
         }
+      );
+
+      this.fs.copy(
+        this.templatePath('scss-lint.yml'),
+        this.destinationPath('scss-lint.yml')
       );
     },
 
@@ -228,46 +227,74 @@ module.exports = generators.Base.extend({
         this.templatePath('main.coffee'),
         this.destinationPath('app/scripts/main.coffee')
       );
+
+      this.fs.copy(
+        this.templatePath('coffeelint.json'),
+        this.destinationPath('coffeelint.json')
+      );
+
+      this.fs.copy(
+        this.templatePath('eslint.json'),
+        this.destinationPath('eslint.json')
+      );
     },
 
     html: function () {
-      var bsPath;
+      var bsPath, bsPlugins, tplOptions;
 
       // path prefix for Bootstrap JS files
-      if (this.includeBootstrap) {
-        bsPath = '/bower_components/';
+      bsPath = '/bower_components/bootstrap-sass/assets/javascripts/bootstrap/';
 
-        if (this.includeSass) {
-          bsPath += 'bootstrap-sass/assets/javascripts/bootstrap/';
-        } else {
-          bsPath += 'bootstrap/js/';
-        }
+      bsPlugins = [
+        'affix',
+        'alert',
+        'dropdown',
+        'tooltip',
+        'modal',
+        'transition',
+        'button',
+        'popover',
+        'carousel',
+        'scrollspy',
+        'collapse',
+        'tab'
+      ];
+
+      tplOptions = {
+        appname: this.appname,
+        includeBootstrap: this.includeBootstrap,
+        includeModernizr: this.includeModernizr,
+        includeJQuery: this.includeJQuery,
+        bsPath: bsPath,
+        bsPlugins: bsPlugins
+      };
+
+      if (this.includeJade) {
+        this.fs.copyTpl(
+          this.templatePath('default.jade'),
+          this.destinationPath('app/layouts/default.jade'),
+          tplOptions
+        );
+        this.fs.copyTpl(
+          this.templatePath('index.jade'),
+          this.destinationPath('app/index.jade'),
+          tplOptions
+        );
+      } else {
+        this.fs.copyTpl(
+          this.templatePath('index.html'),
+          this.destinationPath('app/index.html'),
+          tplOptions
+        );
       }
+    },
 
+    webdriver: function () {
       this.fs.copyTpl(
-        this.templatePath('index.html'),
-        this.destinationPath('app/index.html'),
+        this.templatePath('e2e-index-test.js'),
+        this.destinationPath('e2e/index/test.js'),
         {
-          appname: this.appname,
-          includeSass: this.includeSass,
-          includeBootstrap: this.includeBootstrap,
-          includeModernizr: this.includeModernizr,
-          includeJQuery: this.includeJQuery,
-          bsPath: bsPath,
-          bsPlugins: [
-            'affix',
-            'alert',
-            'dropdown',
-            'tooltip',
-            'modal',
-            'transition',
-            'button',
-            'popover',
-            'carousel',
-            'scrollspy',
-            'collapse',
-            'tab'
-          ]
+          appname: this.appname
         }
       );
     },
@@ -286,8 +313,10 @@ module.exports = generators.Base.extend({
   },
 
   end: function () {
-    var bowerJson = this.fs.readJSON(this.destinationPath('bower.json'));
-    var howToInstall =
+    var bowerJson, howToInstall, wiredepOpts;
+
+    bowerJson = this.fs.readJSON(this.destinationPath('bower.json'));
+    howToInstall =
       '\nAfter running ' +
       chalk.yellow.bold('npm install & bower install') +
       ', inject your' +
@@ -301,22 +330,26 @@ module.exports = generators.Base.extend({
     }
 
     // wire Bower packages to .html
-    wiredep({
+    wiredepOpts = {
       bowerJson: bowerJson,
       directory: 'bower_components',
       exclude: ['bootstrap-sass', 'bootstrap.js'],
       ignorePath: /^(\.\.\/)*\.\./,
       src: 'app/index.html'
-    });
+    };
 
-    if (this.includeSass) {
-      // wire Bower packages to .scss
-      wiredep({
-        bowerJson: bowerJson,
-        directory: 'bower_components',
-        ignorePath: /^(\.\.\/)+/,
-        src: 'app/styles/*.scss'
-      });
+    if (this.includeJade) {
+      wiredepOpts.src = 'app/layouts/default.jade';
     }
+
+    wiredep(wiredepOpts);
+
+    // wire Bower packages to .scss
+    wiredep({
+      bowerJson: bowerJson,
+      directory: 'bower_components',
+      ignorePath: /^(\.\.\/)+/,
+      src: 'app/styles/*.scss'
+    });
   }
 });

@@ -1,9 +1,9 @@
 {
-  "name": "generator-gulp-coffee-webapp",
-  "version": "0.1.3",
-  "description": "Scaffold out a front-end web app",
+  "name": "generator-beanpod",
+  "version": "0.9.0",
+  "description": "Scaffold out a front-end web app with gulp, coffeescript and jade",
   "license": "BSD",
-  "repository": "jaromero/generator-gulp-coffee-webapp",
+  "repository": "jaromero/generator-beanpod",
   "author": "Antonio Romero",
   "main": "app/index.js",
   "engines": {
@@ -11,7 +11,7 @@
     "npm": ">=1.3"
   },
   "scripts": {
-    "test": "mocha --reporter spec"
+    "test": "mocha --reporter spec --timeout 3000"
   },
   "files": [
     "app"
@@ -25,7 +25,9 @@
     "modernizr",
     "jquery",
     "gulp",
-    "coffeescript"
+    "coffeescript",
+    "jade",
+    "sass"
   ],
   "dependencies": {
     "chalk": "^1.0.0",

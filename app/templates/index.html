@@ -47,10 +47,8 @@
         <div class="col-lg-6">
           <h4>HTML5 Boilerplate</h4>
           <p>HTML5 Boilerplate is a professional front-end template for building fast, robust, and adaptable web apps or sites.</p>
-          <% if (includeSass) { %>
           <h4>Sass</h4>
           <p>Sass is the most mature, stable, and powerful professional grade CSS extension language in the world.</p>
-          <% } %>
           <h4>Bootstrap</h4>
           <p>Sleek, intuitive, and powerful mobile first front-end framework for faster and easier web development.</p><% if (includeModernizr) { %>
           <h4>Modernizr</h4>
@@ -68,8 +66,8 @@
       <h1>'Allo, 'Allo!</h1>
       <p>You now have</p>
       <ul>
-        <li>HTML5 Boilerplate</li><% if (includeSass) { %>
-        <li>Sass</li><% } if (includeModernizr) { %>
+        <li>HTML5 Boilerplate</li>
+        <li>Sass</li><% if (includeModernizr) { %>
         <li>Modernizr</li><% } if (includeJQuery) { %>
         <li>jQuery</li><% } %>
       </ul>
@@ -96,10 +94,6 @@
 <% }) -%>
     <!-- endbuild -->
     <% } %>
-    <!-- build:js scripts/main.js -->
-    <script src="scripts/main.js"></script>
-    <!-- endbuild -->
-
     <!-- build:js scripts/main.js -->
     <script src="scripts/main.js"></script>
     <!-- endbuild -->
