@@ -60,7 +60,7 @@ function scsslint(files, options) {
   return () => {
     return gulp.src(files)
       .pipe(reload({stream: true, once: true}))
-      .pipe($.scsslint(Object.assign({}, options, {
+      .pipe($.scssLint(Object.assign({}, options, {
         config: 'scss-lint.yml',
         reporterOutputFormat: 'Checkstyle'
       })))

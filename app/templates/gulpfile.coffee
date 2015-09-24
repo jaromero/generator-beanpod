@@ -57,7 +57,7 @@ scsslint = (files, opts) ->
   ->
     gulp.src files
       .pipe reload {stream: true, once: true}
-      .pipe $.scsslint assign {}, opts,
+      .pipe $.scssLint assign {}, opts,
         config: 'scss-lint.yml'
         reporterOutputFormat: 'Checkstyle'
       .pipe $.if (not browserSync.active), $.scssLint.failReporter 'E'
