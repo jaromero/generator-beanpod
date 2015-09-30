@@ -34,7 +34,6 @@
     "gulp-webdriver": "^0.1.1",
     "main-bower-files": "^2.5.0",<% if (coffeeGulpfile) { %>
     "lodash": "^3.10.1",<% } %>
-    "opn": "^1.0.1",
     "wiredep": "^2.2.2"
   }
 }
