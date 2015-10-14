@@ -1,6 +1,6 @@
 {
   "name": "generator-beanpod",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "Scaffold out a front-end web app with gulp, coffeescript and jade",
   "license": "BSD",
   "repository": "jaromero/generator-beanpod",
