@@ -32,7 +32,10 @@ gulp.task 'scripts', ->
 <% if (includeJade) { %>
 gulp.task 'views', ->
   gulp.src 'app/*.jade'
+    .pipe $.plumber()
     .pipe $.jade {pretty: true}
+    .on 'error', (err) ->
+      console.log 'Error!', err.message
     .pipe gulp.dest '.tmp'
     .pipe reload {stream: true}<% } %>
 
@@ -58,7 +61,7 @@ scsslint = (files, opts) ->
     gulp.src files
       .pipe reload {stream: true, once: true}
       .pipe $.scssLint assign {}, opts,
-        config: 'scss-lint.yml'
+        config: '.scss-lint.yml'
         reporterOutputFormat: 'Checkstyle'
       .pipe $.if (not browserSync.active), $.scssLint.failReporter 'E'
 

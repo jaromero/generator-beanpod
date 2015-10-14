@@ -31,7 +31,10 @@ gulp.task('scripts', () => {
 <% if (includeJade) { %>
 gulp.task('views', () => {
   return gulp.src('app/*.jade')
+    .pipe($.plumber())
     .pipe($.jade({pretty: true}))
+    .on('error', (err) => {
+      console.log('Error!', err.message)})
     .pipe(gulp.dest('.tmp'))
     .pipe(reload({stream: true}));
 });<% } %>
@@ -61,7 +64,7 @@ function scsslint(files, options) {
     return gulp.src(files)
       .pipe(reload({stream: true, once: true}))
       .pipe($.scssLint(Object.assign({}, options, {
-        config: 'scss-lint.yml',
+        config: '.scss-lint.yml',
         reporterOutputFormat: 'Checkstyle'
       })))
       .pipe($.if(!browserSync.active, $.scssLint.failReporter('E')));

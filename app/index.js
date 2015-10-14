@@ -218,7 +218,7 @@ module.exports = generators.Base.extend({
 
       this.fs.copy(
         this.templatePath('scss-lint.yml'),
-        this.destinationPath('scss-lint.yml')
+        this.destinationPath('.scss-lint.yml')
       );
     },
 
