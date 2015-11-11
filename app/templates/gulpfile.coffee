@@ -80,15 +80,12 @@ gulp.task 'scsslint', scsslint 'app/styles/**/*.scss'
 gulp.task 'lint', ['eslint', 'coffeelint', 'scsslint']
 
 gulp.task 'html', ['styles', 'scripts'<% if (includeJade) { %>, 'views'<% } %>], ->
-  assets = $.useref.assets {searchPath: ['.tmp', 'app', '.']}
   <% if (includeJade) { %>
   return gulp.src ['app/*.html', '.tmp/*.html']<% } else { %>
   return gulp.src 'app/*.html'<% } %>
-    .pipe assets
+    .pipe $.useref {searchPath: ['.tmp', 'app', '.']}
     .pipe $.if '*.js', $.uglify()
     .pipe $.if '*.css', $.minifyCss {compatibility: '*'}
-    .pipe assets.restore()
-    .pipe $.useref()
     .pipe $.if '*.html', $.minifyHtml {conditionals: true, loose: true}
     .pipe gulp.dest 'dist'
 
