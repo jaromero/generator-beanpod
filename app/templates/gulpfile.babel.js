@@ -59,16 +59,16 @@ function eslint(files, options) {
       .pipe($.eslint.format())
       .pipe($.if(!browserSync.active, $.eslint.failAfterError()));
   };
-}
+}<% if (!includeBabel) { %>
 function coffeelint(files, options) {
   return () => {
     return gulp.src(files)
-      .pipe(reload({stream: true, once: true}))
-      .pipe($.coffeelint(options))
-      .pipe($.coffeelint.reporter(require('coffeelint-stylish')))
-      .pipe($.if(!browserSync.active, $.coffeelint.reporter('fail')));
+    .pipe(reload({stream: true, once: true}))
+    .pipe($.coffeelint(options))
+    .pipe($.coffeelint.reporter(require('coffeelint-stylish')))
+    .pipe($.if(!browserSync.active, $.coffeelint.reporter('fail')));
   };
-}
+}<% } %>
 function scsslint(files, options) {
   return () => {
     return gulp.src(files)
@@ -92,9 +92,9 @@ const testLintOptions = {
 
 gulp.task('eslint', eslint('app/scripts/**/*.js'));
 gulp.task('eslint:test', eslint('test/spec/**/*.js', testLintOptions));
-
+<% if (!includeBabel) { %>
 gulp.task('coffeelint', coffeelint('app/scripts/**/*.coffee'));
-
+<% } %>
 gulp.task('scsslint', scsslint('app/styles/**/*.scss'));
 
 gulp.task('lint', ['eslint', 'coffeelint', 'scsslint']);
