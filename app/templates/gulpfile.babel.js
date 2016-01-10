@@ -205,7 +205,11 @@ gulp.task('serve:dist', () => {
   });
 });
 
+<% if (includeBabel) { -%>
+gulp.task('serve:test', ['scripts'], () => {
+<% } else { -%>
 gulp.task('serve:test', () => {
+<% } -%>
   browserSync({
     notify: false,
     port: 9000,
@@ -213,11 +217,15 @@ gulp.task('serve:test', () => {
     server: {
       baseDir: 'test',
       routes: {
+        '/scripts': <%= includeBabel ? '.tmp/scripts' : 'app/scripts' %>,
         '/bower_components': 'bower_components'
       }
     }
   });
 
+<% if (includeBabel) { -%>
+  gulp.watch('app/scripts/**/*.js', ['scripts']);
+<% } -%>
   gulp.watch('test/spec/**/*.js').on('change', reload);
   gulp.watch('test/spec/**/*.js', ['eslint:test']);
 });
