@@ -1,7 +1,8 @@
 {
   "env": {
     "node": true,
-    "browser": true
+    "browser": true<% if (includeBabel) { %>,
+    "es6": true<% } %>
   },
   "rules": {
     "comma-dangle": 1,

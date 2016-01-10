@@ -28,6 +28,12 @@ module.exports = generators.Base.extend({
       defaults: 'mocha'
     });
 
+    this.option('babel', {
+      desc: 'Use Babel',
+      type: Boolean,
+      defaults: true
+    });
+
     if (this.options['test-framework'] === 'mocha') {
       testLocal = require.resolve('generator-mocha/generators/app/index.js');
     } else if (this.options['test-framework'] === 'jasmine') {
@@ -125,6 +131,7 @@ module.exports = generators.Base.extend({
           version: this.pkg.version,
           includeBootstrap: this.includeBootstrap,
           includeJade: this.includeJade,
+          includeBabel: this.options['babel'],
           testFramework: this.options['test-framework']
         }
       );
@@ -137,6 +144,7 @@ module.exports = generators.Base.extend({
         {
           includeJade: this.includeJade,
           coffeeGulpfile: this.coffeeGulpfile
+          includeBabel: this.options['babel']
         }
       );
     },
