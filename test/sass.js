@@ -24,5 +24,10 @@ describe('Sass feature', function () {
 
   it('should contain necessary tasks', function () {
     assert.fileContent('gulpfile.babel.js', 'gulp.task(\'scsslint');
+
+  it('should add dependencies', function () {
+    assert.fileContent('package.json', '"gulp-sass"');
+    assert.fileContent('package.json', '"gulp-plumber"');
   });
+
 });
