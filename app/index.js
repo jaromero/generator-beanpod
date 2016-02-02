@@ -28,12 +28,6 @@ module.exports = generators.Base.extend({
       defaults: 'mocha'
     });
 
-    this.option('babel', {
-      desc: 'Use Babel',
-      type: Boolean,
-      defaults: true
-    });
-
     if (this.options['test-framework'] === 'mocha') {
       testLocal = require.resolve('generator-mocha/generators/app/index.js');
     } else if (this.options['test-framework'] === 'jasmine') {
@@ -77,9 +71,9 @@ module.exports = generators.Base.extend({
         value: 'includeJade',
         checked: true
       }, {
-        name: 'Gulpfile in CoffeeScript',
-        value: 'coffeeGulpfile',
-        checked: false
+        name: 'Babel',
+        value: 'includeBabel',
+        checked: true
       }]
     }, {
       type: 'confirm',
@@ -103,7 +97,7 @@ module.exports = generators.Base.extend({
       this.includeBootstrap = hasFeature('includeBootstrap');
       this.includeModernizr = hasFeature('includeModernizr');
       this.includeJade = hasFeature('includeJade');
-      this.coffeeGulpfile = hasFeature('coffeeGulpfile');
+      this.includeBabel = hasFeature('includeBabel');
       this.includeJQuery = answers.includeJQuery;
 
       done();
@@ -114,13 +108,8 @@ module.exports = generators.Base.extend({
     gulpfile: function () {
       var gulpfileTpl, gulpfileDest;
 
-      if (this.coffeeGulpfile) {
-        gulpfileTpl = this.templatePath('gulpfile.coffee');
-        gulpfileDest = this.destinationPath('gulpfile.coffee');
-      } else {
-        gulpfileTpl = this.templatePath('gulpfile.babel.js');
-        gulpfileDest = this.destinationPath('gulpfile.babel.js');
-      }
+      gulpfileTpl = this.templatePath('gulpfile.babel.js');
+      gulpfileDest = this.destinationPath('gulpfile.babel.js');
 
       this.fs.copyTpl(
         gulpfileTpl,
@@ -131,7 +120,7 @@ module.exports = generators.Base.extend({
           version: this.pkg.version,
           includeBootstrap: this.includeBootstrap,
           includeJade: this.includeJade,
-          includeBabel: this.options['babel'],
+          includeBabel: this.includeBabel,
           testFramework: this.options['test-framework']
         }
       );
@@ -143,8 +132,7 @@ module.exports = generators.Base.extend({
         this.destinationPath('package.json'),
         {
           includeJade: this.includeJade,
-          coffeeGulpfile: this.coffeeGulpfile
-          includeBabel: this.options['babel']
+          includeBabel: this.includeBabel
         }
       );
     },
