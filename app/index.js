@@ -70,10 +70,6 @@ module.exports = generators.Base.extend({
         name: 'Jade',
         value: 'includeJade',
         checked: true
-      }, {
-        name: 'Babel',
-        value: 'includeBabel',
-        checked: true
       }]
     }, {
       type: 'confirm',
@@ -83,6 +79,24 @@ module.exports = generators.Base.extend({
       when: function (answers) {
         return answers.features.indexOf('includeBootstrap') === -1;
       }
+    }, {
+      type: 'list',
+      name: 'jsVariant',
+      message: 'What JavaScript variant would you like to use?',
+      choices: [{
+        name: 'Babel (ES2015)',
+        value: 'babel',
+        short: 'Babel'
+      }, {
+        name: 'CoffeeScript',
+        value: 'coffee',
+        short: 'CoffeeScript'
+      }, {
+        name: 'Vanilla JS (no preprocessing)',
+        value: 'vanilla',
+        short: 'Vanilla JS'
+      }],
+      default: 'vanilla'
     }];
 
     this.prompt(prompts, function (answers) {
@@ -97,7 +111,9 @@ module.exports = generators.Base.extend({
       this.includeBootstrap = hasFeature('includeBootstrap');
       this.includeModernizr = hasFeature('includeModernizr');
       this.includeJade = hasFeature('includeJade');
-      this.includeBabel = hasFeature('includeBabel');
+      this.includeBabel = (answers.jsVariant === 'babel');
+      this.includeCoffee = (answers.jsVariant === 'coffee');
+      this.includeJSVariant = (answers.jsVariant !== 'vanilla');
       this.includeJQuery = answers.includeJQuery;
 
       done();
@@ -121,6 +137,8 @@ module.exports = generators.Base.extend({
           includeBootstrap: this.includeBootstrap,
           includeJade: this.includeJade,
           includeBabel: this.includeBabel,
+          includeCoffee: this.includeCoffee,
+          includeJSVariant: this.includeJSVariant,
           testFramework: this.options['test-framework']
         }
       );
@@ -132,7 +150,9 @@ module.exports = generators.Base.extend({
         this.destinationPath('package.json'),
         {
           includeJade: this.includeJade,
-          includeBabel: this.includeBabel
+          includeBabel: this.includeBabel,
+          includeCoffee: this.includeCoffee,
+          includeJSVariant: this.includeJSVariant
         }
       );
     },
@@ -226,19 +246,34 @@ module.exports = generators.Base.extend({
     },
 
     scripts: function () {
-      this.fs.copy(
-        this.templatePath('main.coffee'),
-        this.destinationPath('app/scripts/main.coffee')
-      );
+      if (this.includeCoffee) {
+        this.fs.copy(
+          this.templatePath('main.coffee'),
+          this.destinationPath('app/scripts/main.coffee')
+        );
 
-      this.fs.copy(
-        this.templatePath('coffeelint.json'),
-        this.destinationPath('coffeelint.json')
-      );
+        this.fs.copy(
+          this.templatePath('coffeelint.json'),
+          this.destinationPath('coffeelint.json')
+        );
+      } else if (this.includeBabel) {
+        this.fs.copy(
+          this.templatePath('main.babel.js'),
+          this.destinationPath('app/scripts/main.babel.js')
+        )
+      } else {
+        this.fs.copy(
+          this.templatePath('main.js'),
+          this.destinationPath('app/scripts/main.js')
+        )
+      }
 
-      this.fs.copy(
+      this.fs.copyTpl(
         this.templatePath('eslint.json'),
-        this.destinationPath('eslint.json')
+        this.destinationPath('eslint.json'),
+        {
+          includeBabel: this.includeBabel
+        }
       );
     },
 

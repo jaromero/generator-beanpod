@@ -19,14 +19,15 @@ describe('Sass feature', function () {
   });
 
   it('should create a scss-lint.yml file', function () {
-    assert.file('scss-lint.yml');
+    assert.file('.scss-lint.yml');
   });
 
   it('should contain necessary tasks', function () {
     assert.fileContent('gulpfile.babel.js', 'gulp.task(\'scsslint');
-    it('should add dependencies', function () {
-      assert.fileContent('package.json', '"gulp-sass"');
-      assert.fileContent('package.json', '"gulp-plumber"');
-    });
+  });
+
+  it('should add dependencies', function () {
+    assert.fileContent('package.json', '"gulp-sass"');
+    assert.fileContent('package.json', '"gulp-plumber"');
   });
 });

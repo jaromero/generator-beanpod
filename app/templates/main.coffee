@@ -1,1 +1,3 @@
-console.log '\'Allo \'Allo!'
+world = 'world'
+
+console.log "Hello #{world}!"

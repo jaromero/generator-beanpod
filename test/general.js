@@ -36,12 +36,10 @@ describe('general', function () {
       'app/apple-touch-icon.png',
       'app/robots.txt',
       'app/index.html',
-      'app/scripts/main.coffee',
       'app/styles/main.scss',
       'app/images',
       'app/fonts',
       'test',
-      'coffeelint.json',
       'eslint.json',
       'e2e'
     ]);

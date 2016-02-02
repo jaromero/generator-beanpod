@@ -23,8 +23,8 @@ gulp.task('styles', () => {
     .pipe(reload({stream: true}));
 });
 
+<% if (includeBabel) { -%>
 gulp.task('scripts', () => {
-  <% if (includeBabel) { %>
   return gulp.src('app/scripts/**/*.js')
     .pipe($.plumber())
     .pipe($.sourcemaps.init())
@@ -32,13 +32,19 @@ gulp.task('scripts', () => {
     .pipe($.sourcemaps.write('.'))
     .pipe(gulp.dest('.tmp/scripts'))
     .pipe(reload({stream: true}));
-  <% } else { %>
+});<% } -%>
+
+<% if (includeCoffee) { -%>
+gulp.task('scripts', () => {
   return gulp.src('app/scripts/**/*.{coffee,litcoffee}')
+    .pipe($.sourcemaps.init())
     .pipe($.coffee()).on('error', function(err) { console.log('Error!', err.message)})
-    .pipe(gulp.dest('.tmp/scripts'));
-  <% } %>
-});
-<% if (includeJade) { %>
+    .pipe($.sourcemaps.write('.'))
+    .pipe(gulp.dest('.tmp/scripts'))
+    .pipe(reload({stream: true}));
+});<% } -%>
+
+<% if (includeJade) { -%>
 gulp.task('views', () => {
   return gulp.src('app/*.jade')
     .pipe($.plumber())
@@ -47,7 +53,7 @@ gulp.task('views', () => {
       console.log('Error!', err.message)})
     .pipe(gulp.dest('.tmp'))
     .pipe(reload({stream: true}));
-});<% } %>
+});<% } -%>
 
 function eslint(files, options) {
   return () => {
@@ -59,7 +65,9 @@ function eslint(files, options) {
       .pipe($.eslint.format())
       .pipe($.if(!browserSync.active, $.eslint.failAfterError()));
   };
-}<% if (!includeBabel) { %>
+}
+
+<% if (includeCoffee) { %>
 function coffeelint(files, options) {
   return () => {
     return gulp.src(files)
@@ -68,7 +76,8 @@ function coffeelint(files, options) {
     .pipe($.coffeelint.reporter(require('coffeelint-stylish')))
     .pipe($.if(!browserSync.active, $.coffeelint.reporter('fail')));
   };
-}<% } %>
+}<% } -%>
+
 function scsslint(files, options) {
   return () => {
     return gulp.src(files)
@@ -80,6 +89,7 @@ function scsslint(files, options) {
       .pipe($.if(!browserSync.active, $.scssLint.failReporter('E')));
   };
 }
+
 const testLintOptions = {
   env: {
 <% if (testFramework === 'mocha') { -%>
@@ -92,14 +102,14 @@ const testLintOptions = {
 
 gulp.task('eslint', eslint('app/scripts/**/*.js'));
 gulp.task('eslint:test', eslint('test/spec/**/*.js', testLintOptions));
-<% if (!includeBabel) { %>
+<% if (includeCoffee) { %>
 gulp.task('coffeelint', coffeelint('app/scripts/**/*.coffee'));
 <% } %>
 gulp.task('scsslint', scsslint('app/styles/**/*.scss'));
 
 gulp.task('lint', ['eslint', 'coffeelint', 'scsslint']);
 
-gulp.task('html', ['styles', 'scripts'<% if (includeJade) { %>, 'views'<% } %>], () => {
+gulp.task('html', ['styles'<% if (includeJSVariant) { %>, 'scripts'<% } %><% if (includeJade) { %>, 'views'<% } %>], () => {
   <% if (includeJade) { %>
   return gulp.src(['app/*.html', '.tmp/*.html'])<% } else { %>
   return gulp.src('app/*.html')<% } %>
@@ -141,7 +151,7 @@ gulp.task('extras', () => {
 
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
-gulp.task('browser', ['styles', 'fonts', 'scripts'<% if (includeJade) { %>, 'views'<% } %>], () => {
+gulp.task('browser', ['styles', 'fonts'<% if (includeJSVariant) { %>, 'scripts'<% } %><% if (includeJade) { %>, 'views'<% } %>], () => {
   browserSync({
     notify: false,
     port: 9000,
@@ -154,7 +164,7 @@ gulp.task('browser', ['styles', 'fonts', 'scripts'<% if (includeJade) { %>, 'vie
   });
 });
 
-gulp.task('browser:e2e', ['styles', 'fonts', 'scripts'<% if (includeJade) { %>, 'views'<% } %>], () => {
+gulp.task('browser:e2e', ['styles', 'fonts'<% if (includeJSVariant) { %>, 'scripts'<% } %><% if (includeJade) { %>, 'views'<% } %>], () => {
   browserSync({
     notify: false,
     port: 9000,
@@ -172,7 +182,7 @@ gulp.task('browser:e2e', ['styles', 'fonts', 'scripts'<% if (includeJade) { %>, 
 gulp.task('serve', ['browser'], () => {
   gulp.watch([
     'app/*.html',<% if (includeJade) { %>
-    '.tmp/*.html',<% } if (includeBabel) { -%>
+    '.tmp/*.html',<% } %><% if (includeBabel) { -%>
     '.tmp/scripts/**/*.js',<% } else { -%>
     'app/scripts/**/*.js',<% } -%>
     'app/images/**/*',
@@ -182,7 +192,7 @@ gulp.task('serve', ['browser'], () => {
   gulp.watch('app/**/*.jade', ['views']); <% } %>
   gulp.watch('app/styles/**/*.scss', ['styles']);<% if (includeBabel) { %>
   gulp.watch('app/scripts/**/*.js', ['scripts']);
-  <% } else { %>
+  <% } else if (includeCoffee) { %>
   gulp.watch('app/scripts/**/*.{coffee,litcoffee}', ['scripts']);
   <% } %>
   gulp.watch('app/fonts/**/*', ['fonts']);
@@ -201,7 +211,7 @@ gulp.task('serve:dist', () => {
   });
 });
 
-<% if (includeBabel) { -%>
+<% if (includeJSVariant) { -%>
 gulp.task('serve:test', ['scripts'], () => {
 <% } else { -%>
 gulp.task('serve:test', () => {
@@ -223,7 +233,7 @@ gulp.task('serve:test', () => {
     }
   });
 
-<% if (includeBabel) { -%>
+<% if (includeJSVariant) { -%>
   gulp.watch('app/scripts/**/*.js', ['scripts']);
 <% } -%>
   gulp.watch('test/spec/**/*.js').on('change', reload);
