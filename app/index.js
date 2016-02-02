@@ -269,8 +269,8 @@ module.exports = generators.Base.extend({
       }
 
       this.fs.copyTpl(
-        this.templatePath('eslint.json'),
-        this.destinationPath('eslint.json'),
+        this.templatePath('eslintrc.json'),
+        this.destinationPath('.eslintrc.json'),
         {
           includeBabel: this.includeBabel
         }

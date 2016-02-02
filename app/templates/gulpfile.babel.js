@@ -60,7 +60,7 @@ function eslint(files, options) {
     return gulp.src(files)
       .pipe(reload({stream: true, once: true}))
       .pipe($.eslint(Object.assign({}, options, {
-        configFile: 'eslint.json'
+        configFile: '.eslintrc.json'
       })))
       .pipe($.eslint.format())
       .pipe($.if(!browserSync.active, $.eslint.failAfterError()));
