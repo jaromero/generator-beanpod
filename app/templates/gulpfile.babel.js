@@ -25,7 +25,7 @@ gulp.task('styles', () => {
 
 <% if (includeBabel) { -%>
 gulp.task('scripts', () => {
-  return gulp.src('app/scripts/**/*.js')
+  return gulp.src('app/scripts/**/*.babel.js')
     .pipe($.plumber())
     .pipe($.sourcemaps.init())
     .pipe($.babel())
@@ -53,7 +53,7 @@ gulp.task('views', () => {
       console.log('Error!', err.message)})
     .pipe(gulp.dest('.tmp'))
     .pipe(reload({stream: true}));
-});<% } -%>
+});<% } %>
 
 function eslint(files, options) {
   return () => {
@@ -67,7 +67,7 @@ function eslint(files, options) {
   };
 }
 
-<% if (includeCoffee) { %>
+<% if (includeCoffee) { -%>
 function coffeelint(files, options) {
   return () => {
     return gulp.src(files)
@@ -110,7 +110,7 @@ gulp.task('scsslint', scsslint('app/styles/**/*.scss'));
 gulp.task('lint', ['eslint', 'coffeelint', 'scsslint']);
 
 gulp.task('html', ['styles'<% if (includeJSVariant) { %>, 'scripts'<% } %><% if (includeJade) { %>, 'views'<% } %>], () => {
-  <% if (includeJade) { %>
+  <% if (includeJade) { -%>
   return gulp.src(['app/*.html', '.tmp/*.html'])<% } else { %>
   return gulp.src('app/*.html')<% } %>
     .pipe($.useref({searchPath: ['.tmp', 'app', '.']}))
@@ -182,19 +182,19 @@ gulp.task('browser:e2e', ['styles', 'fonts'<% if (includeJSVariant) { %>, 'scrip
 gulp.task('serve', ['browser'], () => {
   gulp.watch([
     'app/*.html',<% if (includeJade) { %>
-    '.tmp/*.html',<% } %><% if (includeBabel) { -%>
-    '.tmp/scripts/**/*.js',<% } else { -%>
-    'app/scripts/**/*.js',<% } -%>
+    '.tmp/*.html',<% } %><% if (includeBabel) { %>
+    '.tmp/scripts/**/*.js',<% } else { %>
+    'app/scripts/**/*.js',<% } %>
     'app/images/**/*',
     '.tmp/fonts/**/*'
   ]).on('change', reload);
   <% if (includeJade) { %>
   gulp.watch('app/**/*.jade', ['views']); <% } %>
   gulp.watch('app/styles/**/*.scss', ['styles']);<% if (includeBabel) { %>
-  gulp.watch('app/scripts/**/*.js', ['scripts']);
+  gulp.watch('app/scripts/**/*.babel.js', ['scripts']);
   <% } else if (includeCoffee) { %>
   gulp.watch('app/scripts/**/*.{coffee,litcoffee}', ['scripts']);
-  <% } %>
+  <% } -%>
   gulp.watch('app/fonts/**/*', ['fonts']);
   gulp.watch('bower.json', ['wiredep', 'fonts']);
 });
