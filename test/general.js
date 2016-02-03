@@ -40,7 +40,7 @@ describe('general', function () {
       'app/images',
       'app/fonts',
       'test',
-      'eslint.json',
+      '.eslintrc.json',
       'e2e'
     ]);
   });

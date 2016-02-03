@@ -19,7 +19,7 @@ describe('Babel feature', function () {
     });
 
     it('should use the ES6 ESLint environment', function () {
-      assert.fileContent('eslint.json', '"es6": true');
+      assert.fileContent('.eslintrc.json', '"es6": true');
     });
 
     it('should add the scripts task', function () {
@@ -48,7 +48,7 @@ describe('Babel feature', function () {
     });
 
     it('shouldn\'t use the ES6 ESLint environment', function () {
-      assert.noFileContent('eslint.json', '"es6": true');
+      assert.noFileContent('.eslintrc.json', '"es6": true');
     });
 
     it('shouldn\'t add the scripts task', function () {
