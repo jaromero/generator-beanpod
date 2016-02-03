@@ -30,7 +30,7 @@ describe('Babel feature', function () {
     });
 
     it('should create a babel file', function () {
-      assert.file('app/scripts/main.babel.js');
+      assert.fileContent('app/scripts/main.js', 'let');
     });
   });
 
@@ -61,7 +61,7 @@ describe('Babel feature', function () {
     });
 
     it('shouldn\'t create a babel file', function () {
-      assert.noFile('app/scripts/main.babel.js');
+      assert.noFileContent('app/scripts/main.js', 'let');
     });
   });
 });

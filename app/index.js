@@ -259,7 +259,7 @@ module.exports = generators.Base.extend({
       } else if (this.includeBabel) {
         this.fs.copy(
           this.templatePath('main.babel.js'),
-          this.destinationPath('app/scripts/main.babel.js')
+          this.destinationPath('app/scripts/main.js')
         )
       } else {
         this.fs.copy(
