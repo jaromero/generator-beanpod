@@ -25,7 +25,7 @@ gulp.task('styles', () => {
 
 <% if (includeBabel) { -%>
 gulp.task('scripts', () => {
-  return gulp.src('app/scripts/**/*.babel.js')
+  return gulp.src('app/scripts/**/*.js')
     .pipe($.plumber())
     .pipe($.sourcemaps.init())
     .pipe($.babel())
@@ -182,16 +182,15 @@ gulp.task('browser:e2e', ['styles', 'fonts'<% if (includeJSVariant) { %>, 'scrip
 gulp.task('serve', ['browser'], () => {
   gulp.watch([
     'app/*.html',<% if (includeJade) { %>
-    '.tmp/*.html',<% } %><% if (includeBabel) { %>
-    '.tmp/scripts/**/*.js',<% } else { %>
+    '.tmp/*.html',<% } %><% if (!includeBabel) { %>
     'app/scripts/**/*.js',<% } %>
     'app/images/**/*',
     '.tmp/fonts/**/*'
   ]).on('change', reload);
   <% if (includeJade) { %>
-  gulp.watch('app/**/*.jade', ['views']); <% } %>
+  gulp.watch('app/**/*.jade', ['views']);<% } %>
   gulp.watch('app/styles/**/*.scss', ['styles']);<% if (includeBabel) { %>
-  gulp.watch('app/scripts/**/*.babel.js', ['scripts']);
+  gulp.watch('app/scripts/**/*.js', ['scripts']);
   <% } else if (includeCoffee) { %>
   gulp.watch('app/scripts/**/*.{coffee,litcoffee}', ['scripts']);
   <% } -%>
