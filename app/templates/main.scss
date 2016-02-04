@@ -1,5 +1,7 @@
 <% if (includeBootstrap) { %>$icon-font-path: '../fonts/';
 
+<% if (customBootstrap) { %>@import 'custom/bootstrap';<% } %>
+
 // bower:scss
 // endbower
 

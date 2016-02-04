@@ -14,8 +14,12 @@ gulp.task('styles', () => {
     .pipe($.sourcemaps.init())
     .pipe($.sass.sync({
       outputStyle: 'expanded',
-      precision: 10,
-      includePaths: ['.']
+      precision: 10,<% if (customBootstrap) { %>
+      includePaths: [
+        '.',
+        'bower_components/bootstrap-sass/assets/stylesheets'
+      ]<% } else { -%>
+      includePaths: ['.']<% } %>
     }).on('error', $.sass.logError))
     .pipe($.autoprefixer({browsers: ['> 1%', 'last 1 versions', 'Firefox ESR']}))
     .pipe($.sourcemaps.write())
@@ -284,7 +288,8 @@ gulp.task('e2e:chrome', ['serve:e2e'], () => {
 // inject bower components
 gulp.task('wiredep', () => {
   gulp.src('app/styles/*.scss')
-    .pipe(wiredep({
+    .pipe(wiredep({<% if (customBootstrap) { %>
+      exclude: ['bootstrap-sass'],<% } %>
       ignorePath: /^(\.\.\/)+/
     }))
     .pipe(gulp.dest('app/styles'));

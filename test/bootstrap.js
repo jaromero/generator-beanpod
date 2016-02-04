@@ -75,4 +75,25 @@ describe('Bootstrap feature', function () {
       assert.fileContent('bower.json', 'assets/javascripts/bootstrap.js');
     });
   });
+
+  describe('with Sass and custom Bootstrap', function () {
+    before(function(done) {
+      helpers.run(path.join(__dirname, '../app'))
+        .inDir(path.join(__dirname, 'temp'))
+        .withOptions({'skip-install': true})
+        .withPrompts({features: [
+          'includeBootstrap',
+          'customBootstrap'
+        ]})
+        .on('end', done);
+    });
+
+    it('should create the custom Bootstrap imports list', function () {
+      assert.file('app/styles/custom/bootstrap.scss');
+    });
+
+    it('should include the correct @import in main.scss', function () {
+      assert.fileContent('app/styles/main.scss', "@import 'custom/bootstrap';");
+    });
+  });
 });

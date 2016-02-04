@@ -97,6 +97,14 @@ module.exports = generators.Base.extend({
         short: 'Vanilla JS'
       }],
       default: 'vanilla'
+    }, {
+      type: 'confirm',
+      name: 'customBootstrap',
+      message: 'Add support for customizing Bootstrap?',
+      default: true,
+      when: function (answers) {
+        return answers.features.indexOf('includeBootstrap') !== -1;
+      }
     }];
 
     this.prompt(prompts, function (answers) {
@@ -115,6 +123,7 @@ module.exports = generators.Base.extend({
       this.includeCoffee = (answers.jsVariant === 'coffee');
       this.includeJSVariant = (answers.jsVariant !== 'vanilla');
       this.includeJQuery = answers.includeJQuery;
+      this.customBootstrap = answers.customBootstrap;
 
       done();
     }.bind(this));
@@ -122,14 +131,9 @@ module.exports = generators.Base.extend({
 
   writing: {
     gulpfile: function () {
-      var gulpfileTpl, gulpfileDest;
-
-      gulpfileTpl = this.templatePath('gulpfile.babel.js');
-      gulpfileDest = this.destinationPath('gulpfile.babel.js');
-
       this.fs.copyTpl(
-        gulpfileTpl,
-        gulpfileDest,
+        this.templatePath('gulpfile.babel.js'),
+        this.destinationPath('gulpfile.babel.js'),
         {
           date: (new Date).toISOString().split('T')[0],
           name: this.pkg.name,
@@ -139,6 +143,7 @@ module.exports = generators.Base.extend({
           includeBabel: this.includeBabel,
           includeCoffee: this.includeCoffee,
           includeJSVariant: this.includeJSVariant,
+          customBootstrap: this.customBootstrap,
           testFramework: this.options['test-framework']
         }
       );
@@ -235,7 +240,8 @@ module.exports = generators.Base.extend({
         this.templatePath('main.scss'),
         this.destinationPath('app/styles/main.scss'),
         {
-          includeBootstrap: this.includeBootstrap
+          includeBootstrap: this.includeBootstrap,
+          customBootstrap: this.customBootstrap
         }
       );
 
@@ -243,6 +249,13 @@ module.exports = generators.Base.extend({
         this.templatePath('scss-lint.yml'),
         this.destinationPath('.scss-lint.yml')
       );
+
+      if (this.customBootstrap) {
+        this.fs.copy(
+          this.templatePath('customBootstrap.scss'),
+          this.destinationPath('app/styles/custom/bootstrap.scss')
+        );
+      }
     },
 
     scripts: function () {
