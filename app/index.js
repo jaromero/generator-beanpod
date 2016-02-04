@@ -84,6 +84,10 @@ module.exports = generators.Base.extend({
       name: 'jsVariant',
       message: 'What JavaScript variant would you like to use?',
       choices: [{
+        name: 'Vanilla JS (no preprocessing)',
+        value: 'vanilla',
+        short: 'Vanilla JS'
+      }, {
         name: 'Babel (ES2015)',
         value: 'babel',
         short: 'Babel'
@@ -91,10 +95,6 @@ module.exports = generators.Base.extend({
         name: 'CoffeeScript',
         value: 'coffee',
         short: 'CoffeeScript'
-      }, {
-        name: 'Vanilla JS (no preprocessing)',
-        value: 'vanilla',
-        short: 'Vanilla JS'
       }],
       default: 'vanilla'
     }, {
